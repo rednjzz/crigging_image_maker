@@ -4,7 +4,7 @@ import CraneModule from './CraneModule';
 const canvasWidth = 720;
 const canvasHeight = 1280;
 const offSetX = 0;
-const offSetY = 500;
+const offSetY = 0;
 
 // const testData = {
 //   x1: 236,
@@ -18,24 +18,25 @@ const offSetY = 500;
 // };
 const modules = [
   {
-    x1: 236,
-    y1: 60,
+    x1: 63,
+    y1: 220,
     x2: 240,
-    y2: 182,
-    wX: 236,
-    wY: 60,
+    y2: 177,
+    wX: 63,
+    wY: 220,
     angle: 0,
     imgSrc: 'http://localhost:3001/images/1_body.png'
-  },{
-    x1: 198,
-    y1: 271,
-    x2: 198,
-    y2: 124,
-    wX: 240,
-    wY: 182,
-    angle:20,
-    imgSrc: 'http://localhost:3001/images/22_boom.png'
-  }
+  },
+  // {
+  //   x1: 202,
+  //   y1: 275,
+  //   x2: 200,
+  //   y2: 122,
+  //   wX: 240,
+  //   wY: 182,
+  //   angle:20,
+  //   imgSrc: 'http://localhost:3001/images/22_boom.png'
+  // }
 ]
 
 function Canvas() {
@@ -63,6 +64,8 @@ function Canvas() {
       const mod = new CraneModule(
         data.x1, 
         data.y1,
+        data.x2,
+        data.y2,
         data.wX, 
         data.wY,
         offSetX,
@@ -72,7 +75,8 @@ function Canvas() {
         canvasHeight, 
         data.imgSrc, 
         ctx); 
-      mod.draw(); 
+      mod.draw();
+      mod.drawPoints();
       return mod;
     })  
   }, [])
