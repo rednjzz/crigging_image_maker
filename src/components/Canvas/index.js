@@ -4,12 +4,36 @@ import CraneModule from './CraneModule';
 const canvasWidth = 720;
 const canvasHeight = 1280;
 const offSetX = 0;
-const offSetY = 100;
+const offSetY = 500;
 
 let wX = 63;
 let wY = 220;
 
-const modules = [
+/*
+ partsName: {
+ coords: {
+   startingPointX = 63,
+   startingPointY = 220,
+   endingPointX = 240,
+   endingPointY = 177,
+   desirePointX = 63, // coordinates that this parts want to locate
+   desirePointY = 220,
+   zIndex = 1
+ },
+ imgSrc: 'http://localhost:3001/images/i_body.png',
+ subParts: {
+   name: 'extParts',
+   coords: {
+     x: 100,
+     y: 199,
+     zIndex: 5
+   }
+ }
+ nextParts: 'nextPartsName',
+ }
+ * */
+
+const parts = [
   {
     x1: 63,
     y1: 220,
@@ -21,17 +45,27 @@ const modules = [
     imgSrc: 'http://localhost:3001/images/1_body.png'
   },
   {
+    x1: 200,
+    y1: 285,
+    x2: 195,
+    y2: 110,
+    wX: 240,
+    wY: 177,
+    angle: 20,
+    imgSrc: 'http://localhost:3001/images/14_boom0.png'
+  },
+  {
     x1: 202,
     y1: 275,
     x2: 200,
     y2: 122,
-    wX: 240,
-    wY: 177,
+    wX: 192,
+    wY: 137,
     angle:20,
-    imgSrc: 'http://localhost:3001/images/22_boom.png'
+    imgSrc: 'http://localhost:3001/images/22_boom1.png'
   },
   {
-    x1: 203,
+    x1: 205,
     y1: 275,
     x2: 200,
     y2: 124,
@@ -39,6 +73,16 @@ const modules = [
     wY: 122,
     angle:20,
     imgSrc: 'http://localhost:3001/images/21_boom2.png'
+  },
+  {
+    x1: 194,
+    y1: 234,
+    x2: 194,
+    y2: 164,
+    wX: 200,
+    wY: 122,
+    angle:20,
+    imgSrc: 'http://localhost:3001/images/20_boom3.png'
   }
 ]
 
@@ -62,7 +106,7 @@ function Canvas() {
     //   context); 
     // mod.draw(); 
 
-    modules.map((data) => {
+    parts.map((data) => {
       const ctx = canvasRef.current.getContext('2d');
       const mod = new CraneModule(
         data.x1, 
@@ -79,7 +123,7 @@ function Canvas() {
         data.imgSrc, 
         ctx); 
       mod.draw();
-      mod.drawPoints();
+      // mod.drawPoints();
       wX = mod.nextCoordX;
       wY = mod.nextCoordY;
       return mod;
