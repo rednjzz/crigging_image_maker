@@ -5,7 +5,11 @@
 */
 
 export default class CraneModule {
-  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, canvasWidth, canvasHeight, imgSrc, ctx) {
+  nextCoordX = this.nextCoordX;
+  nextCoordY = this.nextCoordY;
+  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, canvasWidth, canvasHeight, imgSrc, drawOrder, refs, ctx) {
+    this.drawOrder = drawOrder;
+    this.refs = refs;
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -24,6 +28,10 @@ export default class CraneModule {
     this.nextCoordX = 0;
     this.nextCoordY = 0;
   }
+  get coord() {
+    return this.nextCoordX;
+  }
+
 
   calculateCoordination() {
     this.rotateX1 = (this.x1 * Math.cos(this.radianAngle) - this.y1 * Math.sin(this.radianAngle)); //이미지 회전시 x1의 좌표의 변화값
@@ -46,11 +54,10 @@ export default class CraneModule {
     image.onload = () => {
       this.ctx.translate(this.x1 - this.rotateX1, this.y1 - this.rotateY1  )  // 회전 위치 보정
       this.ctx.translate(this.offSetX + this.wX - this.x1, this.offSetY + this.wY - this.y1);   // 변환 위치로 이동
-      this.ctx.rotate(this.radianAngle);
+      this.ctx.rotate(this.radianAngle); // 회전
       this.ctx.drawImage(image, 0, 0);        //이미지 그리기
       this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
     }
-
   }
   drawPoints() {
     this.calculateCoordination();

@@ -1,39 +1,27 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import CraneModule from './CraneModule';
 
 const canvasWidth = 720;
-const canvasHeight = 1280;
+const canvasHeight = 800;
 const offSetX = 0;
 const offSetY = 500;
 
 let wX = 63;
 let wY = 220;
 
-/*
- partsName: {
- coords: {
-   startingPointX = 63,
-   startingPointY = 220,
-   endingPointX = 240,
-   endingPointY = 177,
-   desirePointX = 63, // coordinates that this parts want to locate
-   desirePointY = 220,
-   zIndex = 1
- },
- imgSrc: 'http://localhost:3001/images/i_body.png',
- subParts: {
-   name: 'extParts',
-   coords: {
-     x: 100,
-     y: 199,
-     zIndex: 5
-   }
- }
- nextParts: 'nextPartsName',
- }
- * */
-
 const parts = [
+  {
+    x1: 0,
+    y1: 0,
+    x2: 63,
+    y2: 220,
+    wX: 0,
+    wY: 0,
+    angle: 0,
+    imgSrc: 'http://localhost:3001/images/base.png',
+    drawOrder: 15,
+    refs: 0,
+  },
   {
     x1: 63,
     y1: 220,
@@ -42,7 +30,11 @@ const parts = [
     wX: 63,
     wY: 220,
     angle: 0,
-    imgSrc: 'http://localhost:3001/images/1_body.png'
+    imgSrc: 'http://localhost:3001/images/1_body.png',
+    drawOrder: 5,
+    nextCoordX: 63,
+    nextCoordY: 220,
+    refs: 0,
   },
   {
     x1: 200,
@@ -52,7 +44,11 @@ const parts = [
     wX: 240,
     wY: 177,
     angle: 20,
-    imgSrc: 'http://localhost:3001/images/14_boom0.png'
+    imgSrc: 'http://localhost:3001/images/14_boom0.png',
+    drawOrder: 4,
+    nextCoordX: 63,
+    nextCoordY: 220,
+    refs: 1,
   },
   {
     x1: 202,
@@ -62,7 +58,11 @@ const parts = [
     wX: 192,
     wY: 137,
     angle:20,
-    imgSrc: 'http://localhost:3001/images/22_boom1.png'
+    imgSrc: 'http://localhost:3001/images/22_boom1.png',
+    drawOrder: 3,
+    nextCoordX: 63,
+    nextCoordY: 220,
+    refs: 2,
   },
   {
     x1: 205,
@@ -72,68 +72,80 @@ const parts = [
     wX: 200,
     wY: 122,
     angle:20,
-    imgSrc: 'http://localhost:3001/images/21_boom2.png'
+    imgSrc: 'http://localhost:3001/images/21_boom2.png',
+    drawOrder: 2,
+    nextCoordX: 63,
+    nextCoordY: 220,
+    refs: 3,
   },
   {
     x1: 194,
-    y1: 234,
+    y1: 204,
     x2: 194,
     y2: 164,
     wX: 200,
     wY: 122,
     angle:20,
-    imgSrc: 'http://localhost:3001/images/20_boom3.png'
+    imgSrc: 'http://localhost:3001/images/20_boom3.png',
+    drawOrder: 1,
+    nextCoordX: 63,
+    nextCoordY: 220,
+    refs: 4,
   }
 ]
-
 function Canvas() {
-  const canvasRef = useRef(null);
-  
-  useEffect( () => {
-    
-    // const context = canvasRef.current.getContext('2d');
-    // const mod = new CraneModule(
-    //   testData.x1, 
-    //   testData.y1,
-    //   testData.x2,
-    //   testData.y2,
-    //   testData.wX,
-    //   testData.wY,
-    //   testData.angle,
-    //   canvasWidth,
-    //   canvasHeight, 
-    //   testData.imgSrc, 
-    //   context); 
-    // mod.draw(); 
 
-    parts.map((data) => {
-      const ctx = canvasRef.current.getContext('2d');
-      const mod = new CraneModule(
-        data.x1, 
-        data.y1,
-        data.x2,
-        data.y2,
-        wX,
-        wY,
-        offSetX,
-        offSetY,
-        data.angle,
-        canvasWidth,
-        canvasHeight, 
-        data.imgSrc, 
-        ctx); 
-      mod.draw();
-      // mod.drawPoints();
-      wX = mod.nextCoordX;
-      wY = mod.nextCoordY;
-      return mod;
-    })  
+  const [modParts, setModParts] = useState([]);
+  const canvasRef = useRef(null);
+  const onClickButton = () => {
+    let tempModParts = [...modParts];
+    tempModParts.sort((a,b) => a.drawOrder - b.drawOrder);
+    console.log(tempModParts);
+    tempModParts.map(( part) => {
+      part.draw();
+    })
+  }
+  useEffect( () => {
+    const test = async ( _canvasRef ) => {
+
+      let _modParts = await parts.map((data, index) => {
+        const ctx = _canvasRef.getContext('2d');
+        const mod = new CraneModule(
+          data.x1,
+          data.y1,
+          data.x2,
+          data.y2,
+          data.wX,
+          data.wY,
+          offSetX,
+          offSetY,
+          data.angle,
+          canvasWidth,
+          canvasHeight,
+          data.imgSrc,
+          data.drawOrder,
+          data.refs,
+          ctx
+        );
+
+        mod.calculateCoordination();
+        if (parts.length-1 > index){
+          parts[index+1].wX = mod.nextCoordX;
+          parts[index+1].wY = mod.nextCoordY;
+        }
+        return mod;
+      })
+      await setModParts((_modParts));
+    }
+    test(canvasRef.current);
+    // setModParts(_modParts);
   }, [])
 
   return (
     <div >
       <div style={{padding: 20}}>
         <canvas width={canvasWidth} height={canvasHeight} style={{borderStyle: 'solid', borderWidth: '1px'}} ref={canvasRef}/>
+        <button onClick={onClickButton}> 그리기 버튼</button>
       </div>
     </div>
   )
