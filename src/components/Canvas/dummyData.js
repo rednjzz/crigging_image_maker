@@ -1,0 +1,41 @@
+export default {
+  craneName: 'LTM_11200',
+  craneCode: 'T7',
+  craneModeName: 'LUFFING',
+  excelSheetName: 'TN_135t_TAB231545.1',
+  craneData: {
+    mainBoom: 16.1,
+    mainAngle: 83,
+    totalExtLength: 4,
+    adapter1: 4,
+    extBoom1: 0,
+    extBoom2: 0,
+    extBoom3: 0,
+    extBoom4: 0,
+    adapter2: 0,
+    fixLuffing: 91,
+    fixLuffingAngle: 42.8,
+    craneRearDistance: 6.025,
+    distance1: 2.4, // 센터에서 메인붐 d1
+    distance2: 69.6, // 픽스 또는 러핑의 바닥 길이 d2
+    centerToBuildingDistance: 71,
+    centerToBlockDistance: 6.7,
+    rearToBuildingDistance: 65,
+    rearToBlockDistance: 0.7,
+    totalDistance: 72,
+    tableDistance: 72,
+    workDistance: 1,
+    height1: 20,
+    height2: 58.7,
+    totalHeight: 80.7,
+    marginHeight: 6.7,
+    workHeight: 68,
+    tableWeight: 9.1,
+    addWeight: 135,
+    overRear: 'x',
+    optional: 'x',
+    workWeight: 7.5,
+    safetyFactor: 70.1,
+    testCode: 7
+  }
+}

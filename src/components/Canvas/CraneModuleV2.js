@@ -1,13 +1,14 @@
-/** 
+/**
  * rotation point 인 x1, y1으로 이동후
- * rotation 하고 
+ * rotation 하고
  * rotation 값에 의한 오차를 정정 wX wY로
-*/
+ */
 
 export default class CraneModule {
   nextCoordX = this.nextCoordX;
   nextCoordY = this.nextCoordY;
-  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, canvasWidth, canvasHeight, imgSrc, drawOrder, refs, ctx) {
+  constructor(name,x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, canvasWidth, canvasHeight, imgSrc, drawOrder, refs, ctx) {
+    this.name = name;
     this.drawOrder = drawOrder;
     this.refs = refs;
     this.x1 = x1;
@@ -42,6 +43,18 @@ export default class CraneModule {
     const diffY = this.rotateY2 - this.rotateY1;
     this.nextCoordX = diffX + this.wX;
     this.nextCoordY = diffY + this.wY;
+  }
+
+  applyRefCoordination(modules) {
+    modules.map((mod) => {
+      if (mod.name === this.refs?.name) {
+        this.wX = mod.nextCoordX;
+        this.wY = mod.nextCoordY;
+        console.log("mod.name:",mod.name,"refs.name:",this.refs.name);
+        console.log("x,y",this.nextCoordX,this.nextCoordY);
+      }
+      return 0;
+    })
   }
 
   draw() {
