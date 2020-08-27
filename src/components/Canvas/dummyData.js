@@ -5,7 +5,7 @@ export default {
   excelSheetName: 'TN_135t_TAB231545.1',
   craneData: {
     mainBoom: 16.1,
-    mainAngle: 83,
+    mainAngle: 15,
     totalExtLength: 4,
     adapter1: 4,
     extBoom1: 0,

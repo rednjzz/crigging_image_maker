@@ -1,210 +1,75 @@
 import React, {useState, useRef, useEffect} from 'react';
 import CraneModuleV2 from './CraneModuleV2';
 import CraneModule from './CraneModule';
-
 import dummyData from './dummyData';
 import partsData from "./partsData";
-import getParts from './getParts';
+import convertCraneData from "./convertCraneData";
+import config from "./config";
 
-const canvasWidth = 720;
-const canvasHeight = 800;
-const offSetX = 0;
-const offSetY = 500;
+const { canvasWidth, canvasHeight, offSetX, offSetY} = config;
 
-const parts = [
-  {
-    name: 'base',
-    startingPointX: 0,
-    startingPointY: 0,
-    endingPointX: 63,
-    endingPointY: 220,
-    pointToMoveX: 0,
-    pointToMoveY: 0,
-    angle: 0,
-    imgSrc: 'http://localhost:3001/images/base.png',
-    drawOrder: 15,
-    refs: null,
-  },
-  {
-    name: 'body',
-    startingPointX: 63,
-    startingPointY: 220,
-    endingPointX: 240,
-    endingPointY: 177,
-    pointToMoveX: 63,
-    pointToMoveY: 220,
-    angle: 0,
-    imgSrc: 'http://localhost:3001/images/1_body.png',
-    drawOrder: 5,
-    nextCoordX: 63,
-    nextCoordY: 220,
-    refs: 'base',
-  },
-  {
-    name: 'mainBoom1',
-    startingPointX: 200,
-    startingPointY: 285,
-    endingPointX: 195,
-    endingPointY: 110,
-    pointToMoveX: 240,
-    pointToMoveY: 177,
-    angle: 20,
-    imgSrc: 'http://localhost:3001/images/14_boom0.png',
-    drawOrder: 4,
-    nextCoordX: 63,
-    nextCoordY: 220,
-    refs: 'body',
-  },
-  {
-    name: 'mainBoom2',
-    startingPointX: 202,
-    startingPointY: 275,
-    endingPointX: 200,
-    endingPointY: 122,
-    pointToMoveX: 192,
-    pointToMoveY: 137,
-    angle:20,
-    imgSrc: 'http://localhost:3001/images/22_boom1.png',
-    drawOrder: 3,
-    nextCoordX: 63,
-    nextCoordY: 220,
-    refs: 'mainBoom1',
-  },
-  {
-    name: 'mainBoom3',
-    startingPointX: 205,
-    startingPointY: 275,
-    endingPointX: 200,
-    endingPointY: 124,
-    pointToMoveX: 200,
-    pointToMoveY: 122,
-    angle:20,
-    imgSrc: 'http://localhost:3001/images/21_boom2.png',
-    drawOrder: 2,
-    nextCoordX: 63,
-    nextCoordY: 220,
-    refs: 'mainBoom2',
-  },
-  {
-    name: 'mainBoom4',
-    startingPointX: 194,
-    startingPointY: 204,
-    endingPointX: 194,
-    endingPointY: 164,
-    pointToMoveX: 200,
-    pointToMoveY: 122,
-    angle:20,
-    imgSrc: 'http://localhost:3001/images/20_boom3.png',
-    drawOrder: 1,
-    nextCoordX: 63,
-    nextCoordY: 220,
-    refs: 'mainBoom3',
-  }
-]
 function Canvas() {
-
   const [modParts, setModParts] = useState([]);
   const canvasRef = useRef(null);
+
   const onClickButton = () => {
-    let tempModParts = [...modParts];
+    let tempModParts = [...modParts]; // 정렬을 위하 임시저장
     tempModParts.sort((a,b) => a.drawOrder - b.drawOrder);
-    console.log(tempModParts);
-    tempModParts.map(( part) => {
-      return part.draw();
-    })
+    tempModParts.map(( part) => part.draw());
   }
 
-  let modPartsTest= {};
   useEffect( () => {
-    // const partsKeys = Object.keys(partsData); // 파츠 데이터의 키값
-    // const parts = getParts(dummyData); // 영광 데이터를 이용하여 생성
-    //
-    // let _modParts;
-    //
-    // const setCraneNextCoordination = async ( parts ) => {
-    //   console.log("######",parts);
-    //   await parts.map((mod) => {
-    //     mod.applyRefCoordination(parts)
-    //     console.log("mod2:",mod);
-    //   })
-    //   return setModParts((_modParts));
-    // }
-    //
-    // const getCraneCoordinate = async ( _canvasRef ) => {
-    //   _modParts = await partsKeys.map((data, index) => {
-    //     const ctx = _canvasRef.getContext('2d');
-    //     const mod = new CraneModuleV2(
-    //       partsData[`${data}`].name,
-    //       partsData[`${data}`].origin.x,
-    //       partsData[`${data}`].origin.y,
-    //       partsData[`${data}`].joint[0].x,
-    //       partsData[`${data}`].joint[0].y,
-    //       0,
-    //       0,
-    //       offSetX,
-    //       offSetY,
-    //       canvasWidth,
-    //       canvasHeight,
-    //       parts.info.mainAngle,
-    //       partsData[`${data}`].imgSrc, // need to be correct
-    //       partsData[`${data}`].drawOrder,
-    //       partsData[`${data}`].reference,
-    //       ctx
-    //     );
-    //     console.log("mod1:",mod);
-    //     mod.calculateCoordination();
-    //
-    //
-    //     modPartsTest[data.name] = mod;
-    //     return mod;
-    //   })
-    //
-    //   await setModParts((_modParts));
-    // }
-    // getCraneCoordinate(canvasRef.current).then(() => {
-    //   setCraneNextCoordination(_modParts)
-    // }).catch((err) => {console.log(err)});
+    const craneData = convertCraneData(dummyData, partsData); //크레인좌표계산을 위한 객체
+    const modulesA = craneData.moduleDetailArr;
 
-    let _modParts
+    const getCraneCoordinate = async ( _canvasRef, modules ) => {
+      let temp = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
+      let tmpModule = {}; //추가 파츠 좌표 저장 객체
 
-
-    const getCraneCoordinate = async ( _canvasRef ) => {
-
-      console.log(parts);
-      _modParts = await parts.map((data, index) => {
+      const newModules = modules.map((part, index) => {
         const ctx = _canvasRef.getContext('2d');
+
+        if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
+          const refName = part.reference.name;
+          console.log(refName);
+          console.log(tmpModule)
+          temp.x = tmpModule[refName].x;
+          temp.y = tmpModule[refName].y;
+          console.log("temp",temp);
+        }
         const mod = new CraneModule(
-          data.startingPointX,
-          data.startingPointY,
-          data.endingPointX,
-          data.endingPointY,
-          data.refs ? modPartsTest[data.refs].nextCoordX : 0,
-          data.refs ? modPartsTest[data.refs].nextCoordY : 0,
-          // data.pointToMoveX,
-          // data.pointToMoveY,
+          part.origin.x,
+          part.origin.y,
+          part.joint[0].x,
+          part.joint[0].y,
+          temp.x, // 이전 part 값의 nextCoordX
+          temp.y, // 이전 part 값의 nextCoordY
           offSetX,
           offSetY,
-          data.angle,
-          canvasWidth,
-          canvasHeight,
-          data.imgSrc,
-          data.drawOrder,
-          data.refs,
-          ctx
-        );
-
+          part.angle,
+          part.imgSrc,
+          part.drawOrder,
+          part.reference,
+          ctx,
+          part.additional,
+          part?.etc?.x,
+          part?.etc?.y,
+        )
         mod.calculateCoordination();
-        if (parts.length-1 > index){
-          parts[index+1].pointToMoveX = mod.nextCoordX;
-          parts[index+1].pointToMoveY = mod.nextCoordY;
+        // 추가 파츠의 부착위치 계산
+        if (part.additional === true) {
+          tmpModule = {...tmpModule, [part.name]:{x:mod.addCoordX,y:mod.addCoordY}};
         }
-        modPartsTest[data.name] = mod;
+        // 다음 파츠 부착위치 설정
+        temp.x = mod.nextCoordX;
+        temp.y = mod.nextCoordY;
         return mod;
-      })
-      await setModParts((_modParts));
-      console.log("modpartsTest:",modPartsTest);
+      })// end map
+      // console.log("tmpModule",tmpModule);
+      await setModParts(newModules);
+      console.log("newModules",newModules);
     }
-    getCraneCoordinate(canvasRef.current).catch((err) => {console.log(err)});
+    getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});
     // setModParts(_modParts);
   }, [])
 

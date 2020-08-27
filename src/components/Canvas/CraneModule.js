@@ -7,7 +7,9 @@
 export default class CraneModule {
   nextCoordX = this.nextCoordX;
   nextCoordY = this.nextCoordY;
-  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, canvasWidth, canvasHeight, imgSrc, drawOrder, refs, ctx) {
+  addCoordX = this.addCoordX;
+  addCoordY = this.addCoordY;
+  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, imgSrc, drawOrder, refs, ctx, additional,additionalX,additionalY) {
     this.drawOrder = drawOrder;
     this.refs = refs;
     this.x1 = x1;
@@ -18,39 +20,54 @@ export default class CraneModule {
     this.wY = wY;
     this.offSetX = offSetX;
     this.offSetY = offSetY;
-    this.radianAngle = angle * (2*Math.PI ) / 360;
+    this.radianAngle = angle * (2 * Math.PI) / 360;
     this.imgSrc = imgSrc;
     this.ctx = ctx;
-    this.canvasWidth = canvasWidth;
-    this.canvasHeight = canvasHeight;
     this.imageWidth = 400;
     this.imageHeight = 400;
     this.nextCoordX = 0;
     this.nextCoordY = 0;
+    this.addCoordX = 0;
+    this.addCoordY = 0;
+    this.x3 = additionalX;
+    this.y3 = additionalY;
+    this.additional = additional;
   }
-  // get coord() {
-  //   return this.nextCoordX;
-  // }
 
+  rotate(x1, y1, x2, y2, wX, wY, radianAngle) {
+    const rotateX1 = (x1 * Math.cos(radianAngle) - y1 * Math.sin(radianAngle)); //이미지 회전시 x1의 좌표의 변화값
+    const rotateY1 = (x1 * Math.sin(radianAngle) + y1 * Math.cos(radianAngle)); //y1의 각도 변환값
+    const rotateX2 = (x2 * Math.cos(radianAngle) - y2 * Math.sin(radianAngle)); //x2의 각도 변환값
+    const rotateY2 = (x2 * Math.sin(radianAngle) + y2 * Math.cos(radianAngle)); //y2의 각도 변환값
+    const diffX = rotateX2 - rotateX1; // 다음 parts가 attach 되어야 하는 좌표로 이동할 값
+    const diffY = rotateY2 - rotateY1;
+    const nextX = diffX + wX;
+    const nextY = diffY + wY;
+    return { nextX, nextY };
+  }
   // {x2,y2}값 즉 joint 부부이 여러개 일때를 고려해서 수정해야한다.
   calculateCoordination() {
     this.rotateX1 = (this.x1 * Math.cos(this.radianAngle) - this.y1 * Math.sin(this.radianAngle)); //이미지 회전시 x1의 좌표의 변화값
     this.rotateY1 = (this.x1 * Math.sin(this.radianAngle) + this.y1 * Math.cos(this.radianAngle)); //y1의 각도 변환값
-    this.rotateX2 = (this.x2 * Math.cos(this.radianAngle) - this.y2 * Math.sin(this.radianAngle)); //x2의 각도 변환값
-    this.rotateY2 = (this.x2 * Math.sin(this.radianAngle) + this.y2 * Math.cos(this.radianAngle)); //y2의 각도 변환값
-    const diffX = this.rotateX2 - this.rotateX1; // 다음 parts가 attach 되어야 하는 좌표로 이동할 값
-    const diffY = this.rotateY2 - this.rotateY1;
-    this.nextCoordX = diffX + this.wX;
-    this.nextCoordY = diffY + this.wY;
+
+    const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x2,this.y2, this.wX, this.wY, this.radianAngle);
+    this.nextCoordX = nextX;
+    this.nextCoordY = nextY;
+    if (this.additional){
+      const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x3,this.y3, this.wX, this.wY, this.radianAngle);
+      this.addCoordX = nextX;
+      this.addCoordY = nextY;
+    }
+
   }
 
   draw() {
     // calculate draw point
-    this.calculateCoordination();
+    // this.calculateCoordination();
     //Load Image
     const image = new Image();
     image.src = this.imgSrc;
-    //
+
     image.onload = () => {
       this.ctx.translate(this.x1 - this.rotateX1, this.y1 - this.rotateY1  )  // 회전 위치 보정
       this.ctx.translate(this.offSetX + this.wX - this.x1, this.offSetY + this.wY - this.y1);   // 변환 위치로 이동
@@ -61,12 +78,13 @@ export default class CraneModule {
   }
   drawPoints() {
     this.calculateCoordination();
-    this.drawPoint(this.rotateX1,this.rotateY1  ,'green');
-
-    this.drawPoint(this.x1,this.y1  ,'blue');
-    // this.drawPoint(this.rotateX2,this.rotateY2  ,'green');
-    // this.drawPoint(this.x2,this.y2  ,'green');
-    this.drawPoint(this.nextCoordX,this.nextCoordY  ,'blue');
+    // this.drawPoint(this.rotateX1,this.rotateY1  ,'green');
+    //
+    // this.drawPoint(this.x1,this.y1  ,'blue');
+    // // this.drawPoint(this.rotateX2,this.rotateY2  ,'green');
+    // // this.drawPoint(this.x2,this.y2  ,'green');
+    // this.drawPoint(this.nextCoordX,this.nextCoordY  ,'blue');
+    this.drawPoint(this.addCoordX,this.addCoordY  ,'red');
   }
 
   drawPoint(x, y, color) {

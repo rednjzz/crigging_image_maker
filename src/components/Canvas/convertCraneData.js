@@ -1,12 +1,38 @@
 // craneInfor : 영광이데이터
 // partsData: 내가 입력한데이터
 // 입력으로 들어오는 craneInfo는 영광이 getCraneData의 결과값이 입력으로 들어온다.
-import partsData from 'partsData';
 
-export function convertCraneData(craneInfo, partsData) {
+export default function convertCraneData(craneInfo, partsData) {
   // parts Data를 가져온다
   const parts = getParts(craneInfo);
-  // (parts Data의 구성은??)
+  parts.moduleDetailArr = [];
+  // parts.moduleDetailObj = {};
+
+  for( let i=0 ; i<parts.moduleNames.length ; i++) {
+    const moduleName = parts.moduleNames[i];
+    parts.moduleDetailArr.push(partsData[moduleName]);
+    // parts.moduleDetailObj[moduleName] = partsData[moduleName];
+
+    // 각도 입력 bodyParts = 0, mainParts = mainAngle, fixLuffPart = fixLuffingAngle
+    switch(partsData[moduleName].type){
+      case 'bodyParts': {
+        partsData[moduleName].angle = 0;
+        break;
+      }
+      case 'mainParts': {
+        partsData[moduleName].angle = craneInfo.craneData.mainAngle;
+        break;
+      }
+      case 'fixLuffParts': {
+        partsData[moduleName].angle = craneInfo.craneData.fixLuffingAngle;
+        break;
+      }
+      default : {
+        partsData[moduleName].angle = 0;
+      }
+    }
+  }
+  return parts;
 }
 
 // function getPartsByParts
@@ -24,8 +50,9 @@ function getParts(craneInfo) {
               mainAngle: craneData.mainAngle,
               fixLuffingAngle: craneData.fixLuffingAngle
             },
-            moduleNames: ['base','body', 'boom1', 'boom2'],
-            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`]
+            moduleNames: ['base','body', 'boom1', 'boom2', 'boom3', 'boom4', 'fix1', 'fix2', 'add1'],
+            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`],
+            moduleDetail:[],
           };
           break;
         }
