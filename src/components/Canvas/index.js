@@ -23,27 +23,24 @@ function Canvas() {
     const modulesA = craneData.moduleDetailArr;
 
     const getCraneCoordinate = async ( _canvasRef, modules ) => {
-      let temp = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
-      let tmpModule = {}; //추가 파츠 좌표 저장 객체
+      let prevPartsNextCoord = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
+      let additionalParts = {}; //추가 파츠 좌표 저장 객체
 
       const newModules = modules.map((part, index) => {
         const ctx = _canvasRef.getContext('2d');
 
         if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
           const refName = part.reference.name;
-          console.log(refName);
-          console.log(tmpModule)
-          temp.x = tmpModule[refName].x;
-          temp.y = tmpModule[refName].y;
-          console.log("temp",temp);
+          console.log(additionalParts)
+          prevPartsNextCoord.x = additionalParts[refName].x;
+          prevPartsNextCoord.y = additionalParts[refName].y;
+          console.log("prevPartsNextCoord",prevPartsNextCoord);
         }
         const mod = new CraneModule(
           part.origin.x,
           part.origin.y,
-          part.joint[0].x,
-          part.joint[0].y,
-          temp.x, // 이전 part 값의 nextCoordX
-          temp.y, // 이전 part 값의 nextCoordY
+          prevPartsNextCoord.x, // 이전 part 값의 nextCoordX
+          prevPartsNextCoord.y, // 이전 part 값의 nextCoordY
           offSetX,
           offSetY,
           part.angle,
@@ -51,22 +48,26 @@ function Canvas() {
           part.drawOrder,
           part.reference,
           ctx,
-          part.additional,
-          part?.etc?.x,
-          part?.etc?.y,
+          part.joint,
         )
         mod.calculateCoordination();
         // 추가 파츠의 부착위치 계산
+        // ** if (part.joint.length > 1) {
+        // mod.next[1].x}
+        // **
+
         if (part.additional === true) {
-          tmpModule = {...tmpModule, [part.name]:{x:mod.addCoordX,y:mod.addCoordY}};
+          additionalParts = {...additionalParts, [part.name]:{x:mod.next[1].x,y:mod.next[1].y}};
         }
+
         // 다음 파츠 부착위치 설정
-        temp.x = mod.nextCoordX;
-        temp.y = mod.nextCoordY;
+        prevPartsNextCoord.x = mod.next[0].x;
+        prevPartsNextCoord.y = mod.next[0].y;
         return mod;
       })// end map
-      // console.log("tmpModule",tmpModule);
+      // console.log("additionalParts",additionalParts);
       await setModParts(newModules);
+      console.log("additionalParts", additionalParts);
       console.log("newModules",newModules);
     }
     getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});

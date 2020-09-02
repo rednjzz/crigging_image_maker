@@ -5,36 +5,24 @@
 */
 
 export default class CraneModule {
-  nextCoordX = this.nextCoordX;
-  nextCoordY = this.nextCoordY;
-  addCoordX = this.addCoordX;
-  addCoordY = this.addCoordY;
-  constructor(x1,y1,x2,y2,wX,wY,offSetX, offSetY, angle, imgSrc, drawOrder, refs, ctx, additional,additionalX,additionalY) {
-    this.drawOrder = drawOrder;
-    this.refs = refs;
-    this.x1 = x1;
+  constructor(x1,y1,wX,wY,offSetX, offSetY, angle, imgSrc, drawOrder, refs, ctx,joint) {
+    this.x1 = x1; //시작점
     this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-    this.wX = wX;
+    this.wX = wX; // 전에 계산된 파츠의 다음 파츠 부착점, 현재 파츠의 시작점에 될 지점
     this.wY = wY;
     this.offSetX = offSetX;
     this.offSetY = offSetY;
     this.radianAngle = angle * (2 * Math.PI) / 360;
     this.imgSrc = imgSrc;
     this.ctx = ctx;
-    this.imageWidth = 400;
-    this.imageHeight = 400;
-    this.nextCoordX = 0;
-    this.nextCoordY = 0;
-    this.addCoordX = 0;
-    this.addCoordY = 0;
-    this.x3 = additionalX;
-    this.y3 = additionalY;
-    this.additional = additional;
+    this.joint = joint;
+    this.next = [];
+    this.refs = refs;
+    this.drawOrder = drawOrder;
   }
 
   rotate(x1, y1, x2, y2, wX, wY, radianAngle) {
+    // x1,y1: 파츠의 시작점(기준점,원점), x2,y2: 조인트 부분 , wX,wY: 현재 전파츠에서 계산된 현파츠의 기준 절대좌표
     const rotateX1 = (x1 * Math.cos(radianAngle) - y1 * Math.sin(radianAngle)); //이미지 회전시 x1의 좌표의 변화값
     const rotateY1 = (x1 * Math.sin(radianAngle) + y1 * Math.cos(radianAngle)); //y1의 각도 변환값
     const rotateX2 = (x2 * Math.cos(radianAngle) - y2 * Math.sin(radianAngle)); //x2의 각도 변환값
@@ -43,22 +31,19 @@ export default class CraneModule {
     const diffY = rotateY2 - rotateY1;
     const nextX = diffX + wX;
     const nextY = diffY + wY;
-    return { nextX, nextY };
+
+    this.rotateX1 = rotateX1; // rotate값은 draw 할때 필요하다
+    this.rotateY1 = rotateY1;
+    return { x:nextX, y:nextY };
   }
-  // {x2,y2}값 즉 joint 부부이 여러개 일때를 고려해서 수정해야한다.
+
   calculateCoordination() {
-    this.rotateX1 = (this.x1 * Math.cos(this.radianAngle) - this.y1 * Math.sin(this.radianAngle)); //이미지 회전시 x1의 좌표의 변화값
-    this.rotateY1 = (this.x1 * Math.sin(this.radianAngle) + this.y1 * Math.cos(this.radianAngle)); //y1의 각도 변환값
-
-    const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x2,this.y2, this.wX, this.wY, this.radianAngle);
-    this.nextCoordX = nextX;
-    this.nextCoordY = nextY;
-    if (this.additional){
-      const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x3,this.y3, this.wX, this.wY, this.radianAngle);
-      this.addCoordX = nextX;
-      this.addCoordY = nextY;
+    // 아래 부분은 모아서 this.next로 통합 , joint가 여러개인 경우 고려하여 수정됨
+    for(let i=0 ; i<this.joint.length; i++){
+      const x = this.joint[i].x;
+      const y = this.joint[i].y;
+      this.next[i] = this.rotate(this.x1,this.y1, x, y, this.wX, this.wY, this.radianAngle);
     }
-
   }
 
   draw() {
@@ -76,6 +61,7 @@ export default class CraneModule {
       this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
     }
   }
+
   drawPoints() {
     this.calculateCoordination();
     // this.drawPoint(this.rotateX1,this.rotateY1  ,'green');
@@ -95,29 +81,5 @@ export default class CraneModule {
     this.ctx.lineWidth = 1;
     this.ctx.strokeStyle = '#330000';
     this.ctx.stroke();
-  }
-  // 초기 버전 draw 삭제 예정
-  draw_deprecate() {
-    this.calculateCoordination();
-
-    const image = new Image();
-    image.src = this.imgSrc;
-
-    const corrX = this.wX + this.offSetX;
-    const corrY = this.wY + this.offSetY;
-    // const convAngle = this.angle * (2*Math.PI ) / 360;
-
-    // rotation Error Correction coordination
-    const transformX = (corrX * Math.cos(this.radianAngle) + corrY * Math.sin(this.radianAngle));
-    const transformY = (- corrX * Math.sin(this.radianAngle) + corrY * Math.cos(this.radianAngle));
-    // x1 y1 is rotation Point
-    // console.log(transformX, transformY);
-    image.onload = () => {
-      this.ctx.rotate(this.radianAngle);
-      this.ctx.translate(-this.x1, -this.y1)  // 위치 원점으로 초기화
-      this.ctx.translate(transformX , transformY);    // 변환 위치로 이동
-      this.ctx.drawImage(image, 0, 0);        //이미지 그리기
-      this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
-    }
   }
 }

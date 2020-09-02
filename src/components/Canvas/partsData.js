@@ -10,10 +10,6 @@ export default {
       x: 63,
       y: 220,
     }],
-    etc: {
-      x: 0,
-      y: 0,
-    },
     angle: 0,
     reference: null,
     imgSrc: 'http://localhost:3001/images/base.png',
@@ -46,14 +42,9 @@ export default {
       x: 200,
       y: 285,
     },
-    joint: [{
-      x: 195,
-      y: 110,
-    }],
-    etc: {
-      x: 206,
-      y: 214,
-    },
+    joint: [
+      {x: 195, y: 110,},
+      {x:206, y:214}],
     angle: 0,
     additional: true,
     reference: {
@@ -73,10 +64,6 @@ export default {
       x: 200,
       y: 122,
     }],
-    etc: {
-      x: 0,
-      y: 0,
-    },
     angle: 0,
     reference: {
       name: 'boom1'
@@ -95,10 +82,6 @@ export default {
       x: 200,
       y: 124,
     }],
-    etc: {
-      x: 0,
-      y: 0,
-    },
     angle: 0,
     reference: {
       name: 'boom2'
@@ -117,10 +100,6 @@ export default {
       x: 194,
       y: 164,
     }],
-    etc: {
-      x: 0,
-      y: 0,
-    },
     angle: 0,
     reference: {
       name: 'boom3'
@@ -140,10 +119,6 @@ export default {
       y: 145,
     }],
     next: {
-      x: 0,
-      y: 0,
-    },
-    etc: {
       x: 0,
       y: 0,
     },
@@ -169,10 +144,6 @@ export default {
       x: 0,
       y: 0,
     },
-    etc: {
-      x: 0,
-      y: 0,
-    },
     angle: 0,
     reference: {
       name: 'fix1'
@@ -192,10 +163,6 @@ export default {
       y: 220,
     }],
     next: {
-      x: 0,
-      y: 0,
-    },
-    etc: {
       x: 0,
       y: 0,
     },
