@@ -14,17 +14,18 @@ export default function convertCraneData(craneInfo, partsData) {
     // parts.moduleDetailObj[moduleName] = partsData[moduleName];
 
     // 각도 입력 bodyParts = 0, mainParts = mainAngle, fixLuffPart = fixLuffingAngle
+
     switch(partsData[moduleName].type){
       case 'bodyParts': {
         partsData[moduleName].angle = 0;
         break;
       }
       case 'mainParts': {
-        partsData[moduleName].angle = craneInfo.craneData.mainAngle;
+        partsData[moduleName].angle = -1 * craneInfo.craneData.mainAngle;
         break;
       }
       case 'fixLuffParts': {
-        partsData[moduleName].angle = craneInfo.craneData.fixLuffingAngle;
+        partsData[moduleName].angle = -1 * craneInfo.craneData.fixLuffingAngle;
         break;
       }
       default : {
@@ -92,7 +93,7 @@ function getParts(craneInfo) {
               mainAngle: craneData.mainAngle,
               fixLuffingAngle: craneData.fixLuffingAngle
             },
-            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V2','A_0.5', `F_${craneData.fixLuffing}`]
+            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V2','A_0.5', `F_${craneData.fixLuffing}`,'Y']
           };
           break;
         }
@@ -102,7 +103,8 @@ function getParts(craneInfo) {
               mainAngle: craneData.mainAngle,
               fixLuffingAngle: craneData.fixLuffingAngle
             },
-            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', `F_${craneData.fixLuffing}`]
+            moduleNames:['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', `F_${craneData.fixLuffing}`, 'Y'],
+            modules:['LTM_11200_BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', `F_${craneData.fixLuffing}`, 'Y']
           };
           break;
         }

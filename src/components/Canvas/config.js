@@ -1,6 +1,8 @@
 export default {
-  canvasWidth   : 720,
-  canvasHeight  : 800,
-  offSetX       : 0,
-  offSetY       : 500,
+  meterPerPixel: 0.03468,
+  pixelPerMeter: 28.8292,
+  canvasWidth   : 2500,
+  canvasHeight  : 4000,
+  offSetX       : 200,
+  offSetY       : 3900,
 }
