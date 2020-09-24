@@ -4,8 +4,8 @@ export default {
   craneModeName: 'LUFFING',
   excelSheetName: 'TN_135t_TAB231545.1',
   craneData: {
-    mainBoom: 88.3,
-    mainAngle: 86,
+    mainBoom: 88.3, //**
+    mainAngle: 76, //**
     totalExtLength: 4,
     adapter1: 4,
     extBoom1: 0,
@@ -13,29 +13,42 @@ export default {
     extBoom3: 0,
     extBoom4: 0,
     adapter2: 0,
-    fixLuffing: 6.5,
-    fixLuffingAngle: 30,
-    craneRearDistance: 6.025,
+    flyFixLuffing: 6.5, //**
+    fixLuffingAngle: 30, //**
     distance1: 2.4, // 센터에서 메인붐 d1
     distance2: 69.6, // 픽스 또는 러핑의 바닥 길이 d2
-    centerToBuildingDistance: 71,
-    centerToBlockDistance: 6.7,
-    rearToBuildingDistance: 20,
-    rearToBlockDistance: 1.9,
-    totalDistance: 72,
+    craneDistance: 8.93,
+    centerToBuildingDistance: 21,
+    centerToBlockDistance: 10, // cn
+    craneToBuildingDistance: 10, //**
+    craneToBlockDistance: 1.9, //**
+    totalDistance: 72, //d1 + d2
     tableDistance: 72,
-    workDistance: 1,
+    //workDistance: 1,
     height1: 20,
     height2: 58.7,
     totalHeight: 80.7,
     marginHeight: 6.7,
-    workHeight: 68,
+    workingArea: 10.0,
+    // workHeight: 68,
     tableWeight: 9.1,
-    addWeight: 135,
+    counterWeight: '10',
     overRear: 'x',
     optional: 'x',
-    workWeight: 7.5,
     safetyFactor: 70.1,
-    testCode: 7
+    craneLocation: 'LL',
+    workWeight: 7.5,
+    workBuilding:{
+      vertical: 15,
+      horizontal: 0,
+      height: 70
+    },
+    block:{
+      vertical1: 5.1,
+      horizontal1: 0,
+      height1: 25,
+      vertical2: 2,
+      horizontal2: 0,
+    },
   }
 }

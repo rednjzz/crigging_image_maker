@@ -1,5 +1,5 @@
-export default class BoxModule{
-  constructor(offSetX, offSetY, width, height, type, ctx, ppm, craneWidth, distance, markPosition=[]) {
+export default class BuildingModule{
+  constructor(offSetX, offSetY, width, height, type, ctx, ppm, centerX,distance, markPosition=[], markOffset= 0) {
     this.offSetX = offSetX;
     this.offSetY = offSetY;
     this.width = ppm * width;
@@ -7,15 +7,15 @@ export default class BoxModule{
     this.type = type;
     this.ctx = ctx;
     this.ppm = ppm;
-    this.craneWidth = ppm * craneWidth;
+    this.centerX = centerX;
     this.distance = ppm * distance;
-    this.ref1 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    this.ref2 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    this.ref3 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    this.ref4 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
+    // this.ref1 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
+    // this.ref2 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
+    // this.ref3 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
+    // this.ref4 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
     this.markPosition = markPosition;
     this.color = 'grey';
-
+    this.markOffset = markOffset;
     this.initialSetup(type);
   }
   initialSetup(type) {
@@ -31,8 +31,10 @@ export default class BoxModule{
         break;
       }
       case 'Empty': {
-        this.color = 'white';
-        this.lineColor = 'white';
+        this.color = 'transparent';
+        this.lineColor = 'transparent';
+        // this.globalAlpha = 0.5;
+        break;
       }
       default : {
         this.color = 'blue';
@@ -42,8 +44,9 @@ export default class BoxModule{
   changeMeterToPixel(val) {
     return this.ppm * val;
   }
+
   calculateCoordinate() {
-    let x = this.offSetX  + this.craneWidth + this.distance;
+    let x = this.centerX + this.distance;
     let y = this.offSetY  - this.height;
     const width = this.width;
     const height = this.height;
@@ -67,6 +70,7 @@ export default class BoxModule{
       x,y,width,height
     }
   }
+
   draw() {
       const {x,y,width,height} = this.calculateCoordinate();
 
@@ -86,51 +90,20 @@ export default class BoxModule{
     this.ctx.stroke();
     this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
   }
-  drawText(markPosition, textColor) {
-    const textOffsetRight = 50;
-    const textOffsetBottom = 80;
-    const textOffsetLeft = 160;
-    const textOffsetTop = 50;
-    const correctPosition = 40; // 폭을 나타내는 글자가 중간에서 시작하지 않기때문에 보정해줌
-    const fontSize = 30;
 
-    const heightRight = { // 높이 값이 위치 해야하는 좌표(x,y)
-      x: this.ref2.x + textOffsetRight,
-      y: ((this.ref2.y - this.ref4.y)/2  + this.ref4.y),
-    };
-    const widthBottom = {
-      x: ((this.ref4.x - this.ref3.x)/2 + this.ref3.x - correctPosition)  ,
-      y:this.ref4.y + textOffsetBottom
-    };
-    const heightLeft = {
-      x: this.ref1.x - textOffsetLeft,
-      y: ((this.ref1.y - this.ref3.y)/2  + this.ref3.y),
-    };
-    const widthTop = {
-      x: ((this.ref2.x - this.ref1.x)/2 + this.ref1.x - correctPosition),
-      y:this.ref1.y - textOffsetTop
-    };
-    this.ctx.font = `normal ${fontSize}pt Arial`;
-    this.ctx.fillStyle = textColor;
-    this.ctx.fillText(`${(this.height/this.ppm).toFixed(1)}m`, heightRight.x,heightRight.y);
-    this.ctx.fillText(`${(this.width/this.ppm).toFixed(1)}m`, widthBottom.x,widthBottom.y);
-    this.ctx.fillText(`${(this.height/this.ppm).toFixed(1)}m`, heightLeft.x,heightLeft.y);
-    this.ctx.fillText(`${(this.width/this.ppm).toFixed(1)}m`, widthTop.x,widthTop.y);
-    console.log(this.height);
-    this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
-  }
   drawGuideLine(markPosition, textColor) {
-    const spaceOffsetY = 20;
-    const spaceOffsetX = 20;
+    this.markOffset = 0;
+    const spaceOffsetY = 20 + this.markOffset;
+    const spaceOffsetX = 20 + this.markOffset;
     const rowLineOffsetY = 30;
     const rowLineOffsetX = this.width/6;
     const columnLineOffsetY = this.height/6;
     const columnLineOffsetX = 30;
     // Text
-    const textOffsetRight = 50;
-    const textOffsetBottom = 80;
-    const textOffsetLeft = 160;
-    const textOffsetTop = 50;
+    const textOffsetRight = 80 + this.markOffset;
+    const textOffsetBottom = 70 + this.markOffset;
+    const textOffsetLeft = 160 + this.markOffset;
+    const textOffsetTop = 50 + this.markOffset;
     const correctPosition = 40; // 폭을 나타내는 글자가 중간에서 시작하지 않기때문에 보정해줌
     const fontSize = 30;
 
@@ -139,7 +112,7 @@ export default class BoxModule{
       y: ((this.ref2.y - this.ref4.y)/2  + this.ref4.y),
     };
     const widthBottom = {
-      x: ((this.ref4.x - this.ref3.x)/2 + this.ref3.x - correctPosition)  ,
+      x: ((this.ref4.x - this.ref3.x)/2 + this.ref3.x)  ,
       y:this.ref4.y + textOffsetBottom
     };
     const heightLeft = {
@@ -284,6 +257,9 @@ export default class BoxModule{
     };
     
     this.ctx.beginPath();
+    this.ctx.strokeStyle = 'black';
+    this.ctx.textAlign = "center";
+    this.ctx.textBaseline = "middle";
     //Bottom
     if (markPosition.find(v => v === 'bottom')){
       this.ctx.moveTo(gBottom1.x,gBottom1.y);
@@ -364,6 +340,8 @@ export default class BoxModule{
       this.ctx.fillText(`${(this.height/this.ppm).toFixed(1)}m`, heightLeft.x,heightLeft.y);
 
     }
+
+
     this.ctx.stroke();
     this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
   }

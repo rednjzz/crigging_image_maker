@@ -1,28 +1,24 @@
-// import CraneModule from "./CraneModule";
-//
-// export default async function (parts) {
-//   const drawParts = await parts.map((data) => {
-//     const ctx = canvasRef.current.getContext('2d');
-//     const mod = new CraneModule(
-//       data.x1,
-//       data.y1,
-//       data.x2,
-//       data.y2,
-//       wX,
-//       wY,
-//       offSetX,
-//       offSetY,
-//       data.angle,
-//       canvasWidth,
-//       canvasHeight,
-//       data.imgSrc,
-//       data.drawOrder,
-//       ctx);
-//
-//     // mod.draw();
-//     // mod.drawPoints();
-//     wX = mod.nextCoordX;
-//     wY = mod.nextCoordY;
-//     return mod;
-//   })
-// }
+export function abbreviatePartName(partName) {
+  if (/^T/g.test(partName)) return 'T'
+  if(/^F/g.test(partName)) return 'F'
+  return partName;
+}
+
+export const getPoint = (point, ppm) => (distance) => {
+  const distancePx = ppm * distance;
+    return {
+      x: point.x + distancePx,
+      y: point.y
+    }
+  }
+export function drawPoints(points, ctx) {
+  points.forEach(point => {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI, false);
+    ctx.fillStyle = 'black';
+    ctx.fill();
+    // ctx.lineWidth = 20;
+    ctx.strokeStyle = 'black';
+    ctx.stroke();
+  })
+}
