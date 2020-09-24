@@ -276,7 +276,6 @@ function Canvas() {
 
     getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});
     getBuildingCoordinate(canvasRef.current).catch((err) => {console.log(err)});
-
   }, [])
 
   // Draw Image
@@ -285,7 +284,16 @@ function Canvas() {
   tempModParts.sort((a,b) => a.drawOrder - b.drawOrder);
   tempModParts.map(( part) => part?.draw());
   tempBuildParts.map((part) => part?.draw());
-
+  
+  // const imageData = canvasRef.current.getContext('2d');
+  // const data = imageData.data;
+  // for(var i = 0, n = data.length; i < n; i += 4) {
+  //   var red = data[i];
+  //   var green = data[i + 1];
+  //   var blue = data[i + 2];
+  //   var alpha = data[i + 3];
+  //   data[i] = data[i] + 100;
+  // }
   return (
     <div >
       <div style={{padding: 20 }}>

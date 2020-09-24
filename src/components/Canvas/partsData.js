@@ -143,8 +143,8 @@ export default {
       imgSrc: 'http://localhost:3001/images/LTM_11200/A_0.5.png',
       drawOrder: 8,
     },
-    "F_6.5": {
-      name: 'F_6.5',
+    "F_18": {
+      name: 'F_18',
       type: 'fixLuffParts',
       origin: {
         x: 2381,
