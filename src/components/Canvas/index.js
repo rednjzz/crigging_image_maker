@@ -6,16 +6,31 @@ import convertCraneData from "./convertCraneData";
 import CraneModule from './CraneModule';
 import BuildingModule from "./BuildingModule";
 import LineMarker from "./LineMarker";
+import AngleMarker from "./AngleMarker";
 import {drawPoints, getPoint} from "./utils";
 
-const { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
+// canvas의 크기와 옵셋 설정
+let { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
+const pointFromOrigin = getPoint({x:0,y:0}, pixelPerMeter);
+let totalDistance = pointFromOrigin(dummyData.craneData.totalDistance);
+let totalHeight = pointFromOrigin(dummyData.craneData.totalHeight);
+console.log(totalDistance.x, totalHeight.x)
+canvasWidth = totalDistance.x + 2500;
+canvasHeight = totalHeight.x + 5000;
+offSetY = canvasHeight - 500;
 
 function Canvas() {
   const [modParts, setModParts] = useState([]);
   const [BuildParts, setBuildParts] = useState([]);
   const canvasRef = useRef(null);
   let markerRef = useRef({});
+  let markerData = {};
 
+
+  // canvasWidth   : 2000
+  // canvasHeight  : 4700,
+  // offSetX       : 200,
+  // offSetY       : 3950,
   //화면에 그리기
   // const onClickButton = async () => {
   //   let tempModParts = [...modParts]; // 정렬을 위하 임시저장
@@ -81,6 +96,7 @@ function Canvas() {
 
 
 
+      // dummyData에서 craneData를 추출하여
       // MarkerPoint 좌표 생성
       const craneData = dummyData.craneData;
       const pointFromCenter = getPoint({
@@ -120,6 +136,9 @@ function Canvas() {
           x: blockPoint.x,
           y: blockPoint.y,
           value: craneData.centerToBlockDistance
+        },
+        flyFixLuffing: {
+          value: craneData.flyFixLuffing
         }
       }
 
@@ -191,10 +210,6 @@ function Canvas() {
       return buildingPart
     }
 
-    // const getLineMarkerCoordinate = async (_canvasRef) => {
-    //   const ctx = _canvasRef.getContext('2d');
-    //   const test1 = new LineMarker(line1s , line1e, 'bottom', 10) ;
-    // }
     const getCraneCoordinate = async ( _canvasRef, modules ) => {
       let prevPartsNextCoord = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
       let additionalParts = {}; //추가 파츠 좌표 저장 객체
@@ -204,20 +219,30 @@ function Canvas() {
         const ctx = _canvasRef.getContext('2d');
 
         if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
-          const refName = part.reference.name;
+          let refName;
+          // reference name이 1개인경우 그냥 값을 넣는다 그게아니라 2개이면 2개중 선택할수 있도록 코딩
+          // Fix jib의 시작부분에 Luffing이 붙는데 이부분이 2개가 될수 있다. 이부분은 Luffing의 reference.name이
+          // 되어야 하는데 현재 조합에서 그 2가지의 경우중 조합에 있는 경우를 선택하기 위해서 작성된 코드
+          if (Array.isArray(part.reference.name)) {
+            refName = additionalParts[part.reference.name[0]] ? part.reference.name[0] : part.reference.name[1];
+          }
+          else {
+            refName = part.ref.name
+          }
           prevPartsNextCoord.x = additionalParts[refName].x;
           prevPartsNextCoord.y = additionalParts[refName].y;
+          part.angle = additionalParts[refName].angle;
         }
 
+        // 파츠 객체 생성
         const mod = new CraneModule(part, prevPartsNextCoord, offSetX,offSetY, ctx, dummyData );
 
         mod.calculateCoordination();
-        prevPartsNextCoord.x = mod.next[0].x;
+        prevPartsNextCoord.x = mod.next[0].x; // 다음 파츠 부착위치 저장
         prevPartsNextCoord.y = mod.next[0].y;
 
         if (part.additional === true) {
-          // console.log("mod_next",mod.next);
-          additionalParts = {...additionalParts, [part.name]:{x:mod.next[1].x,y:mod.next[1].y}};
+          additionalParts = {...additionalParts, [part.name]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
         }
         // MarkerPoint 좌표 생성
         switch (mod.partName) {
@@ -225,37 +250,55 @@ function Canvas() {
             markerRef.current =  {
               ...markerRef.current,
               boomStart: {
-                x:mod.pointInfo.center.x,
-                y:mod.pointInfo.center.y,
+                x:mod.pointInfo.start.x,
+                y:mod.pointInfo.start.y,
                 //value: mod.angle
               },
               center: {
-                x:mod.pointInfo.center.x,
-                y:mod.pointInfo.center.y,
+                x:mod.pointInfo.start.x,
+                y:mod.pointInfo.start.y,
                 value: mod.angle
               },
               end: {
-                x:mod.pointInfo.top.x,
-                y:mod.pointInfo.top.y
+                x:mod.pointInfo.end.x,
+                y:mod.pointInfo.end.y
+              },
+              boomAngle: {
+                mainAngle : mod.pointInfo.mainAngle,
               }
             }
             break;
           }
           case 'F': {
-            markerRef.current =  {
+            markerRef.current = {
               ...markerRef.current,
               fixStart: {
-                x:mod.pointInfo.center.x,
-                y:mod.pointInfo.center.y,
+                x: mod.pointInfo.start.x,
+                y: mod.pointInfo.start.y,
                 //value: mod.angle
               },
               end: {
-                x:mod.pointInfo.top.x,
-                y:mod.pointInfo.top.y,
+                x: mod.pointInfo.end.x,
+                y: mod.pointInfo.end.y,
                 //value: mod.angle
+              },
+              jibAngle: {
+                mainAngle : mod.pointInfo.mainAngle,
+                fixLuffingAngle : mod.pointInfo.fixLuffingAngle
               }
             }
             break;
+          }
+          case 'H': {
+              markerRef.current =  {
+                ...markerRef.current,
+                end: {
+                  x:mod.pointInfo.end.x,
+                  y:mod.pointInfo.end.y,
+                  //value: mod.angle
+                }
+              }
+              break;
           }
           default : {
 
@@ -263,14 +306,53 @@ function Canvas() {
         }
 
         // 테스트 포인트 그리기
-        if (mod.pointInfo.center) {
-          drawPoints([mod.pointInfo.center], ctx);
+        switch (mod.partName) {
+          case 'T': {
+            const mainBoomAngle = new AngleMarker(
+              ctx,
+              markerRef.current.center,
+              markerRef.current.boomAngle.mainAngle,
+              markerRef.current.boomAngle.mainAngle,
+              0,
+              200,
+            );
+            mainBoomAngle.draw();
+            break;
+          }
+          case 'F': {
+            const fixLuffingAngle1 = new AngleMarker(
+              ctx,
+              markerRef.current.fixStart,
+              markerRef.current.jibAngle.fixLuffingAngle,
+              markerRef.current.jibAngle.mainAngle,
+              markerRef.current.jibAngle.fixLuffingAngle,
+              200,
+            );
+            fixLuffingAngle1.draw();
+            break;
+          }
+          case 'H': {
+              let jibMarkerLine = new LineMarker(
+                ctx,
+                {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
+                {x:markerRef.current.end.x, y:markerRef.current.end.y },
+                18, 30, 20);
+              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+              break;
+          }
+          default: {
+
+          }
         }
+
+        // if (mod.pointInfo.start) {
+        //   drawPoints([mod.pointInfo.start], ctx);
+        // }
+
 
         return mod;
       })// end map
 
-      // console.log("additionalParts",additionalParts);
       await setModParts(newModules);
     }
 
@@ -284,7 +366,7 @@ function Canvas() {
   tempModParts.sort((a,b) => a.drawOrder - b.drawOrder);
   tempModParts.map(( part) => part?.draw());
   tempBuildParts.map((part) => part?.draw());
-  
+
   // const imageData = canvasRef.current.getContext('2d');
   // const data = imageData.data;
   // for(var i = 0, n = data.length; i < n; i += 4) {

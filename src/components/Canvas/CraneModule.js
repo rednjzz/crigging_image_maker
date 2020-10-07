@@ -7,6 +7,7 @@
  *
  * rotation 값에 의한 오차를 정정 wX wY로
 */
+
 import {abbreviatePartName} from "./utils";
 
 export default class CraneModule {
@@ -189,6 +190,7 @@ export default class CraneModule {
       }
     }
   }
+  
   calculateCoordination() {
     // 아래 부분은 모아서 this.next로 통합 , joint가 여러개인 경우 고려하여 수정됨
     for(let i=0 ; i<this.joint.length; i++){
@@ -196,26 +198,41 @@ export default class CraneModule {
       const y = this.joint[i].y;
       this.next[i] = this.rotate(this.x1,this.y1, x, y, this.wX, this.wY, this.radianAngle);
     }
+
     // 특정 point 계산
-    const name = abbreviatePartName(this.part.name);
-    this.partName = name;
-    switch(name){
-      case 'T' : {
-        this.pointInfo.isMarkerExist = true;
-        this.pointInfo.center = {x: this.wX + this.offSetX, y: this.wY + this.offSetY}; //붐의 중심점 좌표
-        this.pointInfo.top = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
-        break;
-      }
-      case 'F' : {
-        this.pointInfo.isMarkerExist = true;
-        this.pointInfo.center = {x: this.wX + this.offSetX, y: this.wY + this.offSetY}; //픽스 시작점좌표
-        this.pointInfo.top = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
-        break;
-      }
-      default : {
-        this.pointInfo.isMarkerExist = false;
-      }
-    }
+
+    this.partName = abbreviatePartName(this.part.name);
+    // this.pointInfo.isMarkerExist = true;
+    this.pointInfo.start = {x: this.wX + this.offSetX, y: this.wY + this.offSetY}; //붐의 중심점 좌표
+    this.pointInfo.end = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
+    this.pointInfo.angle = this.angle;
+    this.pointInfo.mainAngle = this.mainAngle;
+    this.pointInfo.fixLuffingAngle = this.fixLuffingAngle;
+
+    // const name = abbreviatePartName(this.part.name);
+    // this.partName = name;
+    // switch(name){
+    //   case 'T' : {
+    //     this.pointInfo.isMarkerExist = true;
+    //     this.pointInfo.start = {x: this.wX + this.offSetX, y: this.wY + this.offSetY}; //붐의 중심점 좌표
+    //     this.pointInfo.end = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
+    //     break;
+    //   }
+    //   case 'F' : {
+    //     this.pointInfo.isMarkerExist = true;
+    //     this.pointInfo.start = {x: this.wX + this.offSetX, y: this.wY + this.offSetY}; //픽스 시작점좌표
+    //     this.pointInfo.end = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
+    //     break;
+    //   }
+    //   case 'H' : {
+    //     this.pointInfo.isMarkerExist = true;
+    //     this.pointInfo.end = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
+    //     break;
+    //   }
+    //   default : {
+    //     this.pointInfo.isMarkerExist = false;
+    //   }
+    // }
   }
 
   draw() {
@@ -233,9 +250,10 @@ export default class CraneModule {
       this.ctx.setTransform(1,0,0,1,0,0);     // 컨텍스트 초기화
       this.drawMarker();
 
-      if (this.partName === 'T' || this.partName === 'F'){
-        this.drawAngleLine(this.ctx, this.wX, this.wY, this.offSetX, this.offSetY, this.radius, this.angle, this.radianAngle)
-      }
+      // if (this.partName === 'T' || this.partName === 'F'){
+      //   this.drawAngleLine(this.ctx, this.wX, this.wY, this.offSetX, this.offSetY, this.radius, this.angle, this.radianAngle)
+      //   // console.log(this.ctx, this.wX, this.wY, this.offSetX, this.offSetY, this.radius, this.angle, this.radianAngle)
+      // }
     }
   }
 

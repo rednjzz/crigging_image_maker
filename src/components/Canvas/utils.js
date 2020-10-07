@@ -1,6 +1,7 @@
 export function abbreviatePartName(partName) {
   if (/^T/g.test(partName)) return 'T'
   if(/^F/g.test(partName)) return 'F'
+  if(/head$/g.test(partName)) return 'H'
   return partName;
 }
 

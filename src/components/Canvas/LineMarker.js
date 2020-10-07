@@ -5,14 +5,16 @@ export default class LineMarker {
     end = {x:0,y:0},
     value= '0',
     tipLength = 30,
-    fontSize = 30) {
-      this.ctx = ctx;
-      this.start = start;
-      this.end = end;
-      this.value = value;
-      this.tipLength = tipLength;
-      this.fontSize = fontSize;
-      this.lineData = {
+    fontSize = 30
+  ) {
+    this.ctx = ctx;
+    this.start = start;
+    this.end = end;
+    this.value = value;
+    this.tipLength = tipLength;
+    this.fontSize = fontSize;
+    this.rotateAngle =  Math.atan((start.y - end.y) / (end.x - start.x)); //라인의 각도
+    this.lineData = {
       center: {x: 0, y: 0},
       lines: [
         {
@@ -44,8 +46,9 @@ export default class LineMarker {
     const ex = this.end.x;
     const ey = this.end.y;
     const tipLength = this.tipLength;
+    const rotateAngle = this.rotateAngle;
     // 1. 각도 구하기 (sx, sy, ex, ey)
-    const rotateAngle = Math.atan((sy - ey) / (ex - sx)); //return in radians of a number
+    // const rotateAngle = Math.atan((sy - ey) / (ex - sx)); //return in radians of a number
 
     // 각도 만큼 팁 회전
     const nextS1 = this.rotate(sx, sy, sx, sy + tipLength, rotateAngle); //시작지점 팁1
@@ -90,10 +93,28 @@ export default class LineMarker {
 
   applyOffset(offset, position) {
     const lineData = this.lineData;
-
+    const rotateAngle = this.rotateAngle;
+    const rotate = this.rotate;
+    const {x, y} = this.start;
     switch (position) {
+      case 'up2': {
+        // rotational error compensation
+        const rec = rotate(0, 0, 0, offset,rotateAngle);
+
+        lineData.center.y -= rec.y;
+        lineData.center.x -= rec.x;
+        for (let i = 0; i < lineData.lines.length; i++) {
+          // lineData.lines[i].start.y -= offset;
+          lineData.lines[i].start.y -= rec.y;
+          lineData.lines[i].start.x -= rec.x;
+          lineData.lines[i].end.y -= rec.y;
+          lineData.lines[i].end.x -= rec.x;
+        }
+        break;
+      }
       case 'up': {
         lineData.center.y -= offset;
+
         for (let i = 0; i < lineData.lines.length; i++) {
           lineData.lines[i].start.y -= offset;
           lineData.lines[i].end.y -= offset;

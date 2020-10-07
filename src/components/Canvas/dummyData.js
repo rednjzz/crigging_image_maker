@@ -13,8 +13,8 @@ export default {
     extBoom3: 0,
     extBoom4: 0,
     adapter2: 0,
-    flyFixLuffing: 18, //**
-    fixLuffingAngle: 30, //**
+    flyFixLuffing: 126, //**
+    fixLuffingAngle: 25, //**
     distance1: 2.4, // 센터에서 메인붐 d1
     distance2: 69.6, // 픽스 또는 러핑의 바닥 길이 d2
     craneDistance: 8.93,
