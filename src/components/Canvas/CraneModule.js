@@ -32,6 +32,7 @@ export default class CraneModule {
     this.refs = part.reference;
     this.marker = part.marker; //마커가 있는지 true false
     this.length = part.length; //parts length (boom or fix)
+    console.log(this.length);
     this.part = part;
     this.pointInfo = {
     };

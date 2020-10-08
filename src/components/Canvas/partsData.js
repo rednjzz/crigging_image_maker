@@ -38,7 +38,7 @@ export default {
     },
     "T7_100": {
       name: 'T7_100',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 266,
         y: 493,
@@ -57,7 +57,7 @@ export default {
     },
     "T7_94.2": {
       name: 'T7_94.2',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 352,
         y: 490,
@@ -76,7 +76,7 @@ export default {
     },
     "T7_88.3": {
       name: 'T7_88.3',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 441,
         y: 492,
@@ -95,7 +95,7 @@ export default {
     },
     "T7_82.5": {
       name: 'T7_82.5',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 526,
         y: 492,
@@ -114,7 +114,7 @@ export default {
     },
     "T7_76.7": {
       name: 'T7_76.7',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 612,
         y: 491,
@@ -133,7 +133,7 @@ export default {
     },
     "T7_70.8": {
       name: 'T7_70.8',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 698,
         y: 490,
@@ -152,7 +152,7 @@ export default {
     },
     "T7_65": {
       name: 'T7_65',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 785,
         y: 491,
@@ -171,7 +171,7 @@ export default {
     },
     "T7_59.1": {
       name: 'T7_59.1',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 876,
         y: 492,
@@ -190,7 +190,7 @@ export default {
     },
     "T7_53.3": {
       name: 'T7_53.3',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 959,
         y: 491,
@@ -209,7 +209,7 @@ export default {
     },
     "T7_47.5": {
       name: 'T7_47.5',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 933,
         y: 495,
@@ -228,7 +228,7 @@ export default {
     },
     "T7_41.6": {
       name: 'T7_41.6',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 1137,
         y: 490,
@@ -247,7 +247,7 @@ export default {
     },
     "T7_35.8": {
       name: 'T7_35.8',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 1120,
         y: 492,
@@ -266,7 +266,7 @@ export default {
     },
     "T7_29.9": {
       name: 'T7_29.9',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 1310,
         y: 491,
@@ -285,7 +285,7 @@ export default {
     },
     "T7_24.1": {
       name: 'T7_24.1',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 1394,
         y: 491,
@@ -304,7 +304,7 @@ export default {
     },
     "T7_18.3": {
       name: 'T7_18.3',
-      type: 'mainParts',
+      type: 'boomParts',
       origin: {
         x: 1482,
         y: 491,
@@ -335,6 +335,7 @@ export default {
       reference: {
         name: 'BODY'
       },
+      length: 2.6,
       imgSrc: 'http://localhost:3001/images/LTM_11200/A_2.6.png',
       drawOrder: 12,
     },
@@ -347,6 +348,10 @@ export default {
       },
       joint: [
         {x: 2592, y: 2500,}],
+      marker: {
+            position: 'top',
+            end: {x: 2592, y: 2500}},
+      length: 6,
       angle: 0,
       additional: false,
       reference: {
@@ -364,6 +369,10 @@ export default {
       },
       joint: [
         {x: 2592, y: 2500,}],
+      marker: {
+        position: 'top',
+        end: {x: 2592, y: 2500}},
+      length: 6,
       angle: 0,
       additional: false,
       reference: {
@@ -381,6 +390,10 @@ export default {
       },
       joint: [
         {x: 2646, y: 2500,}],
+      marker: {
+        position: 'top',
+        end: {x: 2646, y: 2500}},
+      length: 10,
       angle: 0,
       additional: false,
       reference: {
@@ -398,6 +411,7 @@ export default {
       },
       joint: [
         {x: 2480, y: 2550,}],
+      length: 0.5,
       angle: 0,
       additional: false,
       reference: {
@@ -406,29 +420,29 @@ export default {
       imgSrc: 'http://localhost:3001/images/LTM_11200/A_0.5.png',
       drawOrder: 8,
     },
-    "F_18": {
-      name: 'F_18',
-      type: 'fixLuffParts',
-      origin: {
-        x: 2381,
-        y: 2504,
-      },
-      joint: [
-        {x: 2583, y: 2518,},
-        {x: 2381, y: 2504,}],
-      marker: {
-        position: 'top',
-        end: {x: 2583, y: 2504}
-      },
-      angle: 0,
-      additional: true,
-      addCode: 'F',
-      reference: {
-        name: 'BODY'
-      },
-      imgSrc: 'http://localhost:3001/images/LTM_11200/F_6.5.png',
-      drawOrder: 7,
-    },
+    // "F_18": {
+    //   name: 'F_18',
+    //   type: 'fixLuffParts',
+    //   origin: {
+    //     x: 2381,
+    //     y: 2504,
+    //   },
+    //   joint: [
+    //     {x: 2583, y: 2518,},
+    //     {x: 2381, y: 2504,}],
+    //   marker: {
+    //     position: 'top',
+    //     end: {x: 2583, y: 2504}
+    //   },
+    //   angle: 0,
+    //   additional: true,
+    //   addCode: 'F',
+    //   reference: {
+    //     name: 'BODY'
+    //   },
+    //   imgSrc: 'http://localhost:3001/images/LTM_11200/F_6.5.png',
+    //   drawOrder: 7,
+    // },
     "F9m_nsbs":{
       name: 'F9m_nsbs',
       type: 'jibParts',

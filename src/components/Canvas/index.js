@@ -293,7 +293,7 @@ function Canvas() {
           }
         }
 
-        // 테스트 포인트 그리기
+        // 각도 마커, 길이 마커 그리기
         switch (mod.partName) {
           case 'T': {
             const mainBoomAngle = new AngleMarker(

@@ -19,6 +19,12 @@ export default function convertCraneData(craneInfo, partsData) {
       case 'mainParts': {
         partsData[moduleName].angle = craneInfo.craneData.mainAngle;
         partsData[moduleName].mainAngle = craneInfo.craneData.mainAngle;
+        // partsData[moduleName].length = craneInfo.craneData.mainBoom;
+        break;
+      }
+      case 'boomParts': {
+        partsData[moduleName].angle = craneInfo.craneData.mainAngle;
+        partsData[moduleName].mainAngle = craneInfo.craneData.mainAngle;
         partsData[moduleName].length = craneInfo.craneData.mainBoom;
         break;
       }
@@ -90,9 +96,7 @@ function getParts({craneName, craneCode, craneData}) {
         case 'T7Y'            : return ['BODY', `T7_${craneData.mainBoom}`, 'Y']
         case 'T7YVEF|NZF'     : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','A_0.5', ...jib]
         case 'T7YVEV2F|NZF'   : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V2','A_0.5', ...jib,'Y']
-        // case 'T7YVEV2F|NZF'   : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V2','A_0.5', ...jib ,'Y','N']
-        // case 'T7YVEV3V2F|NZF' : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', ...jib, 'Y']
-        case 'T7YVEV3V2F|NZF' : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', ...jib, 'Y', 'N']
+        case 'T7YVEV3V2F|NZF' : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', ...jib, 'Y']
         case 'T3'             : return ['BODY', `T3_${craneData.mainBoom}`]
         case 'T3N'            : return ['BODY', `T3_${craneData.mainBoom}`, 'A_4.2',...jib, 'N' ]
         case 'T3F|NZF'        : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.7',...jib ]

@@ -1,7 +1,7 @@
 export default {
   craneName: 'LTM_11200',
   // craneCode: 'T7YVEV3V2F|NZF',
-  craneCode: 'T7Y',
+  craneCode: 'T7YVEV3V2F|NZF',
   craneModeName: 'LUFFING',
   excelSheetName: 'TN_135t_TAB231545.1',
   craneData: {
@@ -14,7 +14,7 @@ export default {
     extBoom3: 0,
     extBoom4: 0,
     adapter2: 0,
-    flyFixLuffing: 126, //**
+    flyFixLuffing: 60, //**
     fixLuffingAngle: 25, //**
     distance1: 2.4, // 센터에서 메인붐 d1
     distance2: 69.6, // 픽스 또는 러핑의 바닥 길이 d2
