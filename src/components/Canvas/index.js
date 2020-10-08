@@ -12,9 +12,8 @@ import {drawPoints, getPoint} from "./utils";
 // canvas의 크기와 옵셋 설정
 let { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
 const pointFromOrigin = getPoint({x:0,y:0}, pixelPerMeter);
-let totalDistance = pointFromOrigin(dummyData.craneData.totalDistance);
-let totalHeight = pointFromOrigin(dummyData.craneData.totalHeight);
-console.log(totalDistance.x, totalHeight.x)
+const totalDistance = pointFromOrigin(dummyData.craneData.totalDistance);
+const totalHeight = pointFromOrigin(dummyData.craneData.totalHeight);
 canvasWidth = totalDistance.x + 2500;
 canvasHeight = totalHeight.x + 5000;
 offSetY = canvasHeight - 500;
@@ -24,8 +23,6 @@ function Canvas() {
   const [BuildParts, setBuildParts] = useState([]);
   const canvasRef = useRef(null);
   let markerRef = useRef({});
-  let markerData = {};
-
 
   // canvasWidth   : 2000
   // canvasHeight  : 4700,
@@ -41,7 +38,7 @@ function Canvas() {
   // }
 
   useEffect( () => {
-    const modulesA = convertCraneData(dummyData, partsData.LTM_11200); //크레인정보 입력된 데이터 객체
+    const modulesA = convertCraneData(dummyData, partsData[dummyData.craneName]); //크레인정보 입력된 데이터 객체
 
     const getBuildingCoordinate = async (_canvasRef) => {
       const ctx = _canvasRef.getContext('2d');
@@ -49,7 +46,7 @@ function Canvas() {
       const isBlock1Exist = Boolean(dummyData.craneData.block.vertical1);
       const isBlock2Exist = Boolean(dummyData.craneData.block.vertical2);
 
-      let blockPart;
+      let blockPart; // 진짜 장애물
       if(isBlock1Exist) {
         blockPart = new BuildingModule(
           offSetX,
@@ -65,7 +62,7 @@ function Canvas() {
         );
       }
 
-      let block2Part;
+      let block2Part; // 작은 장애물
       if(isBlock2Exist){
         block2Part = new BuildingModule(
           offSetX,
@@ -81,6 +78,7 @@ function Canvas() {
         );
       }
 
+      // 리깅할 건물
       const buildingPart = new BuildingModule(
         offSetX,
         offSetY,
@@ -94,11 +92,10 @@ function Canvas() {
         ['right', 'bottom']
         );
 
-
-
       // dummyData에서 craneData를 추출하여
       // MarkerPoint 좌표 생성
       const craneData = dummyData.craneData;
+      // 주어진 거리값[m]을 좌표값(x,y)으로 변환
       const pointFromCenter = getPoint({
         x:markerRef.current.center.x,
         y:markerRef.current.center.y}, pixelPerMeter);
@@ -219,19 +216,10 @@ function Canvas() {
         const ctx = _canvasRef.getContext('2d');
 
         if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
-          let refName;
-          // reference name이 1개인경우 그냥 값을 넣는다 그게아니라 2개이면 2개중 선택할수 있도록 코딩
-          // Fix jib의 시작부분에 Luffing이 붙는데 이부분이 2개가 될수 있다. 이부분은 Luffing의 reference.name이
-          // 되어야 하는데 현재 조합에서 그 2가지의 경우중 조합에 있는 경우를 선택하기 위해서 작성된 코드
-          if (Array.isArray(part.reference.name)) {
-            refName = additionalParts[part.reference.name[0]] ? part.reference.name[0] : part.reference.name[1];
-          }
-          else {
-            refName = part.ref.name
-          }
-          prevPartsNextCoord.x = additionalParts[refName].x;
-          prevPartsNextCoord.y = additionalParts[refName].y;
-          part.angle = additionalParts[refName].angle;
+          const refCode = part.reference.code;
+          prevPartsNextCoord.x = additionalParts[refCode].x;
+          prevPartsNextCoord.y = additionalParts[refCode].y;
+          part.angle = additionalParts[refCode].angle;
         }
 
         // 파츠 객체 생성
@@ -242,7 +230,7 @@ function Canvas() {
         prevPartsNextCoord.y = mod.next[0].y;
 
         if (part.additional === true) {
-          additionalParts = {...additionalParts, [part.name]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
+          additionalParts = {...additionalParts, [part.addCode]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
         }
         // MarkerPoint 좌표 생성
         switch (mod.partName) {
@@ -317,6 +305,13 @@ function Canvas() {
               200,
             );
             mainBoomAngle.draw();
+            let boomMarkerLine = new LineMarker(
+              ctx,
+              {x:markerRef.current.center.x, y:markerRef.current.center.y },
+              {x:markerRef.current.end.x, y:markerRef.current.end.y },
+              dummyData.craneData.mainBoom, 30, 20);
+            boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+
             break;
           }
           case 'F': {
@@ -336,7 +331,7 @@ function Canvas() {
                 ctx,
                 {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
-                18, 30, 20);
+                dummyData.craneData.flyFixLuffing, 30, 20);
               jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
           }

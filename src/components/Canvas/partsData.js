@@ -36,26 +36,289 @@ export default {
       drawOrder: 14,
       additional: false,
     },
+    "T7_100": {
+      name: 'T7_100',
+      type: 'mainParts',
+      origin: {
+        x: 266,
+        y: 493,
+      },
+      joint: [
+        {x: 3226, y: 500,},
+        {x: 733, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_100.png',
+      drawOrder: 13,
+    },
+    "T7_94.2": {
+      name: 'T7_94.2',
+      type: 'mainParts',
+      origin: {
+        x: 352,
+        y: 490,
+      },
+      joint: [
+        {x: 3140, y: 500,},
+        {x: 818, y: 524,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_94.2.png',
+      drawOrder: 13,
+    },
     "T7_88.3": {
       name: 'T7_88.3',
       type: 'mainParts',
       origin: {
-        x: 1195,
-        y: 2494,
+        x: 441,
+        y: 492,
       },
       joint: [
-        {x: 3840, y: 2498,},
-        {x: 1662, y: 2516,}],
-      marker: {
-        position: 'top',
-        end: {x: 3840, y: 2494}
-      },
+        {x: 3053, y: 502,},
+        {x: 907, y: 525,}],
       angle: 0,
       additional: true,
+      addCode: 'T',
       reference: {
         name: 'BODY'
       },
       imgSrc: 'http://localhost:3001/images/LTM_11200/T7_88.3.png',
+      drawOrder: 13,
+    },
+    "T7_82.5": {
+      name: 'T7_82.5',
+      type: 'mainParts',
+      origin: {
+        x: 526,
+        y: 492,
+      },
+      joint: [
+        {x: 2968, y: 500,},
+        {x: 992, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_82.5.png',
+      drawOrder: 13,
+    },
+    "T7_76.7": {
+      name: 'T7_76.7',
+      type: 'mainParts',
+      origin: {
+        x: 612,
+        y: 491,
+      },
+      joint: [
+        {x: 2882, y: 499,},
+        {x: 1077, y: 524,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_76.7.png',
+      drawOrder: 13,
+    },
+    "T7_70.8": {
+      name: 'T7_70.8',
+      type: 'mainParts',
+      origin: {
+        x: 698,
+        y: 490,
+      },
+      joint: [
+        {x: 2796, y: 499,},
+        {x: 1164, y: 524,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_70.8.png',
+      drawOrder: 13,
+    },
+    "T7_65": {
+      name: 'T7_65',
+      type: 'mainParts',
+      origin: {
+        x: 785,
+        y: 491,
+      },
+      joint: [
+        {x: 2708, y: 499,},
+        {x: 1252, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_65.png',
+      drawOrder: 13,
+    },
+    "T7_59.1": {
+      name: 'T7_59.1',
+      type: 'mainParts',
+      origin: {
+        x: 876,
+        y: 492,
+      },
+      joint: [
+        {x: 2619, y: 500,},
+        {x: 1341, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_59.1.png',
+      drawOrder: 13,
+    },
+    "T7_53.3": {
+      name: 'T7_53.3',
+      type: 'mainParts',
+      origin: {
+        x: 959,
+        y: 491,
+      },
+      joint: [
+        {x: 2535, y: 500,},
+        {x: 1425, y: 524,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_53.3.png',
+      drawOrder: 13,
+    },
+    "T7_47.5": {
+      name: 'T7_47.5',
+      type: 'mainParts',
+      origin: {
+        x: 933,
+        y: 495,
+      },
+      joint: [
+        {x: 2560, y: 498,},
+        {x: 1418, y: 518,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_47.5.png',
+      drawOrder: 13,
+    },
+    "T7_41.6": {
+      name: 'T7_41.6',
+      type: 'mainParts',
+      origin: {
+        x: 1137,
+        y: 490,
+      },
+      joint: [
+        {x: 2359, y: 500,},
+        {x: 1602, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_41.6.png',
+      drawOrder: 13,
+    },
+    "T7_35.8": {
+      name: 'T7_35.8',
+      type: 'mainParts',
+      origin: {
+        x: 1120,
+        y: 492,
+      },
+      joint: [
+        {x: 2276, y: 500,},
+        {x: 1685, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_35.8.png',
+      drawOrder: 13,
+    },
+    "T7_29.9": {
+      name: 'T7_29.9',
+      type: 'mainParts',
+      origin: {
+        x: 1310,
+        y: 491,
+      },
+      joint: [
+        {x: 2185, y: 499,},
+        {x: 1841, y: 532,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_29.9.png',
+      drawOrder: 13,
+    },
+    "T7_24.1": {
+      name: 'T7_24.1',
+      type: 'mainParts',
+      origin: {
+        x: 1394,
+        y: 491,
+      },
+      joint: [
+        {x: 2101, y: 500,},
+        {x: 1925, y: 532,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_24.1.png',
+      drawOrder: 13,
+    },
+    "T7_18.3": {
+      name: 'T7_18.3',
+      type: 'mainParts',
+      origin: {
+        x: 1482,
+        y: 491,
+      },
+      joint: [
+        {x: 2012, y: 500,},
+        {x: 1943, y: 525,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T7_18.3.png',
       drawOrder: 13,
     },
     "A_2.6": {
@@ -159,6 +422,7 @@ export default {
       },
       angle: 0,
       additional: true,
+      addCode: 'F',
       reference: {
         name: 'BODY'
       },
@@ -177,6 +441,7 @@ export default {
         {x: 350, y: 500}
       ],
       additional: true,
+      addCode: 'F',
       reference: {
         name: 'BODY'
       },
@@ -195,6 +460,7 @@ export default {
         {x: 395, y: 516}
       ],
       additional: true,
+      addCode: 'F',
       reference: {
         name: 'BODY'
       },
@@ -401,6 +667,7 @@ export default {
       angle: 0,
       additional: false,
       reference: {
+        code: 'T',
         name: ['T7_88.3']
       },
       imgSrc: 'http://localhost:3001/images/LTM_11200/Y.png',
@@ -418,6 +685,7 @@ export default {
       angle: 0,
       additional: false,
       reference: {
+        code: 'F',
         name: ['F9m_nsbs' , 'F3.5m_TF_bs']
       },
       imgSrc: 'http://localhost:3001/images/LTM_11200/N.png',
