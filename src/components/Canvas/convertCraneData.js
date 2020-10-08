@@ -98,14 +98,14 @@ function getParts({craneName, craneCode, craneData}) {
         case 'T7YVEV2F|NZF'   : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V2','A_0.5', ...jib,'Y']
         case 'T7YVEV3V2F|NZF' : return ['BODY', `T7_${craneData.mainBoom}`, 'A_2.6','VE','V3','V2','A_0.5', ...jib, 'Y']
         case 'T3'             : return ['BODY', `T3_${craneData.mainBoom}`]
-        case 'T3N'            : return ['BODY', `T3_${craneData.mainBoom}`, 'A_4.2',...jib, 'N' ]
-        case 'T3F|NZF'        : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.7',...jib ]
+        case 'T3N'            : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2','A_2',...jib, 'N' ]
+        case 'T3F|NZF'        : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2','A_0.5',...jib ]
         case 'T3Y'            : return ['BODY', `T3_${craneData.mainBoom}`, 'Y' ]
         // case 'T3YVEN'         : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2', 'VE', 'A_2', `N_${craneData.flyFixLuffing}` ]
-        case 'T3YV'           : return ['BODY', `T3_${craneData.mainBoom}`, 'A_4.3','V3','Y' ]
+        // case 'T3YV'           : return ['BODY', `T3_${craneData.mainBoom}`, 'A_4.3','V3','Y' ]
         case 'T3YVEN'         : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2', 'VE', 'A_2', ...jib ]
         case 'T3YV2VEN'       : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2', 'V2', 'VE', 'A_2', ...jib, 'Y','N' ]
-        case 'T3YVEF|NZF'     : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.7', 'VE', ...jib ]
+        case 'T3YVEF|NZF'     : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2', 'VE', 'A_0.5', ...jib ]
         default               : return []
       }
     case 'LTM_1500_84m': {

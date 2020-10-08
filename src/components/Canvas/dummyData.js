@@ -1,11 +1,12 @@
 export default {
   craneName: 'LTM_11200',
   // craneCode: 'T7YVEV3V2F|NZF',
-  craneCode: 'T7YVEV3V2F|NZF',
+  craneCode: 'T3YVEF|NZF',
   craneModeName: 'LUFFING',
   excelSheetName: 'TN_135t_TAB231545.1',
   craneData: {
-    mainBoom: 53.3, //**
+    // mainBoom: 53.3, //**
+    mainBoom: 52.2, //**
     mainAngle: 76, //**
     totalExtLength: 4,
     adapter1: 4,

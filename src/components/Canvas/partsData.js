@@ -321,6 +321,158 @@ export default {
       imgSrc: 'http://localhost:3001/images/LTM_11200/T7_18.3.png',
       drawOrder: 13,
     },
+    "T3_55": {
+      name: 'T3_55',
+      type: 'boomParts',
+      origin: {
+        x: 648,
+        y: 486,
+      },
+      joint: [
+        {x: 2333, y: 486,},
+        {x: 1129, y: 520,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_55.png',
+      drawOrder: 13,
+    },
+    "T3_49.1": {
+      name: 'T3_49.1',
+      type: 'boomParts',
+      origin: {
+        x: 742,
+        y: 488,
+      },
+      joint: [
+        {x: 2241, y: 488,},
+        {x: 1123, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_49.1.png',
+      drawOrder: 13,
+    },
+    "T3_43.3": {
+      name: 'T3_43.3',
+      type: 'boomParts',
+      origin: {
+        x: 829,
+        y: 486,
+      },
+      joint: [
+        {x: 2155, y: 486,},
+        {x: 1309, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_43.3.png',
+      drawOrder: 13,
+    },
+    "T3_37.4": {
+      name: 'T3_37.4',
+      type: 'boomParts',
+      origin: {
+        x: 921,
+        y: 486,
+      },
+      joint: [
+        {x: 2062, y: 486,},
+        {x: 1402, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_37.4.png',
+      drawOrder: 13,
+    },
+    "T3_31.6": {
+      name: 'T3_31.6',
+      type: 'boomParts',
+      origin: {
+        x: 1010,
+        y: 487,
+      },
+      joint: [
+        {x: 1973, y: 487,},
+        {x: 1490, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_31.6.png',
+      drawOrder: 13,
+    },
+    "T3_25.8": {
+      name: 'T3_25.8',
+      type: 'boomParts',
+      origin: {
+        x: 1104,
+        y: 488,
+      },
+      joint: [
+        {x: 1879, y: 488,},
+        {x: 1585, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_25.8.png',
+      drawOrder: 13,
+    },
+    "T3_19.9": {
+      name: 'T3_19.9',
+      type: 'boomParts',
+      origin: {
+        x: 1191,
+        y: 488,
+      },
+      joint: [
+        {x: 1792, y: 488,},
+        {x: 1671, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_19.9.png',
+      drawOrder: 13,
+    },
+    "T3_52.2": {
+      name: 'T3_52.2',
+      type: 'boomParts',
+      origin: {
+        x: 648,
+        y: 487,
+      },
+      joint: [
+        {x: 2246, y: 487,},
+        {x: 1129, y: 521,}],
+      angle: 0,
+      additional: true,
+      addCode: 'T',
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/T3_52.2.png',
+      drawOrder: 13,
+    },
     "A_2.6": {
       name: 'A_2.6',
       type: 'mainParts',
@@ -406,11 +558,11 @@ export default {
       name: 'A_0.5',
       type: 'mainParts',
       origin: {
-        x: 2476,
-        y: 2519,
+        x: 462,
+        y: 523,
       },
       joint: [
-        {x: 2480, y: 2550,}],
+        {x: 477, y: 553,}],
       length: 0.5,
       angle: 0,
       additional: false,
@@ -418,6 +570,42 @@ export default {
         name: 'BODY'
       },
       imgSrc: 'http://localhost:3001/images/LTM_11200/A_0.5.png',
+      drawOrder: 8,
+    },
+    "A_2": {
+      name: 'A_2',
+      type: 'mainParts',
+      origin: {
+        x: 471,
+        y: 492,
+      },
+      joint: [
+        {x: 527, y: 534,}],
+      length: 2,
+      angle: 0,
+      additional: false,
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/A_2.png',
+      drawOrder: 8,
+    },
+    "A_2.2": {
+      name: 'A_2.2',
+      type: 'mainParts',
+      origin: {
+        x: 465,
+        y: 491,
+      },
+      joint: [
+        {x: 537, y: 497,}],
+      length: 2.2,
+      angle: 0,
+      additional: false,
+      reference: {
+        name: 'BODY'
+      },
+      imgSrc: 'http://localhost:3001/images/LTM_11200/A_2.2.png',
       drawOrder: 8,
     },
     // "F_18": {
