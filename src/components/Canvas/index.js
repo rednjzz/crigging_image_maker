@@ -232,7 +232,7 @@ function Canvas() {
         if (part.additional === true) {
           additionalParts = {...additionalParts, [part.addCode]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
         }
-        // MarkerPoint 좌표 생성
+        // MarkerPoint 좌표 생성 및 마커 그리기
         switch (mod.partName) {
           case 'T': {
             markerRef.current =  {
@@ -255,6 +255,22 @@ function Canvas() {
                 mainAngle : mod.pointInfo.mainAngle,
               }
             }
+            // 마커 그리기
+            const mainBoomAngle = new AngleMarker(
+              ctx,
+              markerRef.current.center,
+              markerRef.current.boomAngle.mainAngle,
+              markerRef.current.boomAngle.mainAngle,
+              0,
+              200,
+            );
+            mainBoomAngle.draw();
+            let boomMarkerLine = new LineMarker(
+              ctx,
+              {x:markerRef.current.center.x, y:markerRef.current.center.y },
+              {x:markerRef.current.end.x, y:markerRef.current.end.y },
+              dummyData.craneData.mainBoom, 30, 30);
+            boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
             break;
           }
           case 'F': {
@@ -275,46 +291,7 @@ function Canvas() {
                 fixLuffingAngle : mod.pointInfo.fixLuffingAngle
               }
             }
-            break;
-          }
-          case 'H': {
-              markerRef.current =  {
-                ...markerRef.current,
-                end: {
-                  x:mod.pointInfo.end.x,
-                  y:mod.pointInfo.end.y,
-                  //value: mod.angle
-                }
-              }
-              break;
-          }
-          default : {
-
-          }
-        }
-
-        // 각도 마커, 길이 마커 그리기
-        switch (mod.partName) {
-          case 'T': {
-            const mainBoomAngle = new AngleMarker(
-              ctx,
-              markerRef.current.center,
-              markerRef.current.boomAngle.mainAngle,
-              markerRef.current.boomAngle.mainAngle,
-              0,
-              200,
-            );
-            mainBoomAngle.draw();
-            let boomMarkerLine = new LineMarker(
-              ctx,
-              {x:markerRef.current.center.x, y:markerRef.current.center.y },
-              {x:markerRef.current.end.x, y:markerRef.current.end.y },
-              dummyData.craneData.mainBoom, 30, 20);
-            boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
-
-            break;
-          }
-          case 'F': {
+            // 마커 그리기
             const fixLuffingAngle1 = new AngleMarker(
               ctx,
               markerRef.current.fixStart,
@@ -327,24 +304,31 @@ function Canvas() {
             break;
           }
           case 'H': {
-              let jibMarkerLine = new LineMarker(
-                ctx,
-                {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
-                {x:markerRef.current.end.x, y:markerRef.current.end.y },
-                dummyData.craneData.flyFixLuffing, 30, 20);
-              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
-              break;
+            markerRef.current =  {
+              ...markerRef.current,
+              end: {
+                x:mod.pointInfo.end.x,
+                y:mod.pointInfo.end.y,
+                //value: mod.angle
+              }
+            }
+            //마커 그리기
+            let jibMarkerLine = new LineMarker(
+              ctx,
+              {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
+              {x:markerRef.current.end.x, y:markerRef.current.end.y },
+              dummyData.craneData.flyFixLuffing, 30, 30);
+            jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+            break;
           }
-          default: {
-
+          default : {
           }
         }
-
+        
         // if (mod.pointInfo.start) {
         //   drawPoints([mod.pointInfo.start], ctx);
         // }
-
-
+        
         return mod;
       })// end map
 

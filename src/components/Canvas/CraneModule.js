@@ -41,6 +41,8 @@ export default class CraneModule {
       this.radius = 250;
     }
     this.dummyData = dummyData;
+    this.tipLength = 30;
+    this.tipOffset = 150;
 
   }
 
@@ -68,12 +70,13 @@ export default class CraneModule {
 
   calculateMarker(x1, y1, marker, wX, wY, radianAngle, offSetX, offSetY) {
     if(marker) {
-      const offset = 100;
+      const offset = this.tipOffset;
+      const tipLength = this.tipLength; //마커의 길이 값
       // const next = this.rotate(x1, y1, marker.end.x, marker.end.y, wX, wY, radianAngle);
       const nextEnd = this.rotate(x1, y1, marker.end.x, marker.end.y - offset, wX, wY, radianAngle);
       const nextStart = this.rotate(x1, y1, x1, y1 - offset, wX, wY, radianAngle);
 
-      const tipLength = 30; //마커의 길이 값
+
 
       const sx = nextStart.x + offSetX; //시작점의 x좌표 / 이건 값이 변경 된어야 할것 같다 (marker start의 x 좌표로 변경필요)
       const sy = nextStart.y + offSetY;
