@@ -23,3 +23,10 @@ export function drawPoints(points, ctx) {
     ctx.stroke();
   })
 }
+
+export function getJibMod(craneCode) {
+  if (/T$/g.test(craneCode)) return 'T'
+  if (/F$/g.test(craneCode)) return 'F'
+  if (/K$/g.test(craneCode)) return 'K'
+  return ''
+}
