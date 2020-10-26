@@ -55,12 +55,12 @@ export default class CraneModule {
     const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x2,this.y2, this.wX, this.wY, this.radianAngle);
     this.nextCoordX = nextX;
     this.nextCoordY = nextY;
+
     if (this.additional){
       const { nextX, nextY } = this.rotate(this.x1,this.y1,this.x3,this.y3, this.wX, this.wY, this.radianAngle);
       this.addCoordX = nextX;
       this.addCoordY = nextY;
     }
-
   }
 
   draw() {

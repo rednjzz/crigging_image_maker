@@ -15,6 +15,8 @@ export default class CraneModule {
   constructor(part,prevPartNextCoord, offSetX, offSetY, ctx, dummyData) {
     this.x1 = part.origin.x; //시작점
     this.y1 = part.origin.y;
+    this.x2 = part.joint[0].x;
+    this.y2 = part.joint[0].y;
     this.wX = prevPartNextCoord.x; // 전에 계산된 파츠의 다음 파츠 부착점, 현재 파츠의 시작점에 될 지점
     this.wY = prevPartNextCoord.y;
     this.offSetX = offSetX;
@@ -29,7 +31,7 @@ export default class CraneModule {
     this.ctx = ctx;
     this.joint = part.joint;
     this.next = [];
-    this.refs = part.reference;
+    // this.refs = part.reference;
     this.marker = part.marker; //마커가 있는지 true false
     this.length = part.length; //parts length (boom or fix)
     console.log(this.length);
@@ -40,7 +42,7 @@ export default class CraneModule {
     if(part.fixLuffingAngle) {
       this.radius = 250;
     }
-    this.dummyData = dummyData;
+    // this.dummyData = dummyData;
     this.tipLength = 30;
     this.tipOffset = 150;
 
@@ -68,15 +70,13 @@ export default class CraneModule {
     return {x: rx , y:ry }
   }
 
-  calculateMarker(x1, y1, marker, wX, wY, radianAngle, offSetX, offSetY) {
+  calculateMarker(x1, y1, x2, y2, marker, wX, wY, radianAngle, offSetX, offSetY) {
     if(marker) {
       const offset = this.tipOffset;
       const tipLength = this.tipLength; //마커의 길이 값
       // const next = this.rotate(x1, y1, marker.end.x, marker.end.y, wX, wY, radianAngle);
-      const nextEnd = this.rotate(x1, y1, marker.end.x, marker.end.y - offset, wX, wY, radianAngle);
+      const nextEnd = this.rotate(x1, y1, x2, y2 - offset, wX, wY, radianAngle);
       const nextStart = this.rotate(x1, y1, x1, y1 - offset, wX, wY, radianAngle);
-
-
 
       const sx = nextStart.x + offSetX; //시작점의 x좌표 / 이건 값이 변경 된어야 할것 같다 (marker start의 x 좌표로 변경필요)
       const sy = nextStart.y + offSetY;
@@ -262,7 +262,7 @@ export default class CraneModule {
   }
 
   drawMarker() {
-    const marker = this.calculateMarker(this.x1, this.y1, this.marker, this.wX, this.wY, this.radianAngle, this.offSetX, this.offSetY);
+    const marker = this.calculateMarker(this.x1, this.y1, this.x2, this.y2, this.marker, this.wX, this.wY, this.radianAngle, this.offSetX, this.offSetY);
     if(marker){
       this.ctx.beginPath();
       this.ctx.font = `normal ${30}pt Arial`;

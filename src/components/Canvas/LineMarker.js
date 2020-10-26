@@ -161,7 +161,7 @@ export default class LineMarker {
     ctx.fillStyle = 'black';
     // ctx.textAlign = "center";
     // ctx.textBaseline = "middle";
-
+    ctx.lineWidth = 3;
     ctx.fillText(`${length}[m]`, lineData.center.x, lineData.center.y);
     lineData.lines.forEach((line) => {
       ctx.moveTo(line.start.x, line.start.y);

@@ -9,10 +9,6 @@ export default class BuildingModule{
     this.ppm = ppm;
     this.centerX = centerX;
     this.distance = ppm * distance;
-    // this.ref1 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    // this.ref2 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    // this.ref3 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
-    // this.ref4 = {x: 0, y: 0}; //가이드 라인을 그리기위한 기준좌표
     this.markPosition = markPosition;
     this.color = 'grey';
     this.markOffset = markOffset;

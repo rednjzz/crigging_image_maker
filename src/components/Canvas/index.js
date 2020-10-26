@@ -144,16 +144,6 @@ function Canvas() {
       //   {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
       //   {x:markerRef.current.buildingStart.x, y:markerRef.current.buildingStart.y},
       //   'BuildingDistance', 10, 30);
-      let blockLine = new LineMarker(
-        ctx,
-        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-        {x:markerRef.current.blockDistance.x, y:markerRef.current.blockDistance.y},
-        markerRef.current.blockDistance.value, 10, 30);
-      let craneDistanceLine = new LineMarker(
-        ctx,
-        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-        {x:markerRef.current.rearPoint.x, y:markerRef.current.rearPoint.y},
-        markerRef.current.craneDistance.value, 10, 30);
       // let d1Line = new LineMarker(
       //   ctx,
       //   {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
@@ -164,11 +154,6 @@ function Canvas() {
       //   {x:markerRef.current.fixStart.x, y:markerRef.current.boomStart.y},
       //   {x:markerRef.current.fixEnd.x, y:markerRef.current.boomStart.y},
       //   'd2', 10, 30);
-      let totalDistanceLine = new LineMarker(
-        ctx,
-        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-        {x:markerRef.current.totalDistance.x, y:markerRef.current.totalDistance.y},
-        markerRef.current.totalDistance.value, 10, 30);
       // let h1Line = new LineMarker(
       //   ctx,
       //   {x:markerRef.current.fixEnd.x, y:3950},
@@ -179,30 +164,34 @@ function Canvas() {
       //   {x:markerRef.current.fixEnd.x, y:markerRef.current.fixStart.y},
       //   {x:markerRef.current.fixEnd.x, y:markerRef.current.fixEnd.y},
       //   'h2', 10, 30);
+      let blockLine = new LineMarker(
+        ctx,
+        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
+        {x:markerRef.current.blockDistance.x, y:markerRef.current.blockDistance.y},
+        markerRef.current.blockDistance.value, 10, 30);
+      let craneDistanceLine = new LineMarker(
+        ctx,
+        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
+        {x:markerRef.current.rearPoint.x, y:markerRef.current.rearPoint.y},
+        markerRef.current.craneDistance.value, 10, 30);
+
+      let totalDistanceLine = new LineMarker(
+        ctx,
+        {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
+        {x:markerRef.current.totalDistance.x, y:markerRef.current.totalDistance.y},
+        markerRef.current.totalDistance.value, 10, 30);
 
       blockLine.calculateGuidelinePosition().applyOffset(350, 'down');
-      // buildingLine.calculateGuidelinePosition().applyOffset(450, 'down');
       craneDistanceLine.calculateGuidelinePosition().applyOffset(165, 'down');
-      // d1Line.calculateGuidelinePosition().applyOffset(600, 'down');
-      // d2Line.calculateGuidelinePosition().applyOffset(600, 'down');
       totalDistanceLine.calculateGuidelinePosition().applyOffset(500, 'down');
-      // h1Line.calculateGuidelinePosition().applyOffset(500, 'right');
-      // h2Line.calculateGuidelinePosition().applyOffset(500, 'right');
 
       await setBuildParts([
         block2Part,
         buildingPart,
         blockPart,
-        // linePart1,
-        // linePart2,
-        // buildingLine,
         blockLine,
         craneDistanceLine,
         totalDistanceLine,
-        // d1Line,
-        // d2Line,
-        // h1Line,
-        // h2Line
         ]);
       return buildingPart
     }
@@ -216,7 +205,7 @@ function Canvas() {
         const ctx = _canvasRef.getContext('2d');
 
         if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
-          const refCode = part.reference.code;
+          const refCode = part.refCode;
           prevPartsNextCoord.x = additionalParts[refCode].x;
           prevPartsNextCoord.y = additionalParts[refCode].y;
           part.angle = additionalParts[refCode].angle;
@@ -229,8 +218,8 @@ function Canvas() {
         prevPartsNextCoord.x = mod.next[0].x; // 다음 파츠 부착위치 저장
         prevPartsNextCoord.y = mod.next[0].y;
 
-        if (part.additional === true) {
-          additionalParts = {...additionalParts, [part.addCode]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
+        if (part.code) {
+          additionalParts = {...additionalParts, [part.code]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
         }
         // MarkerPoint 좌표 생성 및 마커 그리기
         switch (mod.partName) {
@@ -346,19 +335,10 @@ function Canvas() {
   tempModParts.map(( part) => part?.draw());
   tempBuildParts.map((part) => part?.draw());
 
-  // const imageData = canvasRef.current.getContext('2d');
-  // const data = imageData.data;
-  // for(var i = 0, n = data.length; i < n; i += 4) {
-  //   var red = data[i];
-  //   var green = data[i + 1];
-  //   var blue = data[i + 2];
-  //   var alpha = data[i + 3];
-  //   data[i] = data[i] + 100;
-  // }
   return (
     <div >
       <div style={{padding: 20 }}>
-        <canvas width={canvasWidth} height={canvasHeight} style={{borderStyle: 'solid', borderWidth: '1px', width:'650px'}} ref={canvasRef}/>
+        <canvas width={canvasWidth} height={canvasHeight} style={{borderStyle: 'solid', borderWidth: '1px', width:'468px'}} ref={canvasRef}/>
         {/*<button onClick={onClickButton}> 그리기 버튼</button>*/}
       </div>
     </div>
