@@ -23,10 +23,12 @@ export default class CraneModule {
     this.offSetY = offSetY;
     this.angle = part.angle;
     this.mainAngle = part.mainAngle;
-    this.fixLuffingAngle = part.fixLuffingAngle;
+    this.flyFixLuffingAngle = part.flyFixLuffingAngle
+;
     this.radianAngle = this.angle * (2 * Math.PI) / 360;
     this.mainRadianAngle = this.mainAngle * (2 * Math.PI) / 360;
-    this.fixLuffingRadianAngle = this.fixLuffingAngle * (2 * Math.PI) / 360;
+    this.fixLuffingRadianAngle = this.flyFixLuffingAngle
+ * (2 * Math.PI) / 360;
     this.imgSrc = part.imgSrc;
     this.ctx = ctx;
     this.joint = part.joint;
@@ -40,7 +42,8 @@ export default class CraneModule {
     this.pointInfo = {
     };
     this.radius = 100; // 호의 반지름 (각도표시)
-    if(part.fixLuffingAngle) {
+    if(part.flyFixLuffingAngle
+) {
       this.radius = 250;
     }
     // this.dummyData = dummyData;
@@ -221,7 +224,8 @@ export default class CraneModule {
     this.pointInfo.end = { x: this.next[0].x + this.offSetX, y: this.next[0].y + this.offSetY }; // 다음 접합점좌표
     this.pointInfo.angle = this.angle;
     this.pointInfo.mainAngle = this.mainAngle;
-    this.pointInfo.fixLuffingAngle = this.fixLuffingAngle;
+    this.pointInfo.flyFixLuffingAngle = this.flyFixLuffingAngle
+;
 
     // const name = abbreviatePartName(this.part.name);
     // this.partName = name;

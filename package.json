@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-private-methods": "^7.10.4",
+    "axios": "^0.21.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "xlsx": "^0.16.8"
   },
   "scripts": {
     "start": "react-scripts start",
