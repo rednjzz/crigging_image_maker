@@ -1,7 +1,7 @@
 import React, {useState, useRef, useEffect} from 'react';
 import config from "./config";
-import dummyData from './dummyData';
-import partsData from "./partsData";
+import dummyData from './dummyData'; // 삭제되어야 함
+
 import convertCraneData from "./convertCraneData";
 import CraneModule from './CraneModule';
 import BuildingModule from "./BuildingModule";
@@ -13,7 +13,6 @@ import drawWire from './drawWire';
 import {abbreviatePartName} from "./utils";
 import axios from 'axios';
 
-
 // canvas의 크기와 옵셋 설정
 let { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
 const pointFromOrigin = getPoint({x:0,y:0}, pixelPerMeter);
@@ -23,57 +22,50 @@ canvasWidth = totalDistance.x + 2500;
 canvasHeight = totalHeight.x + 5000;
 offSetY = canvasHeight - 500;
 
-function Canvas() {
+function Canvas({craneInfo}) {
+  // cavas의 크기 및 옵세을 config 해야한다.
+  // canvasWidth   : 2000
+  // canvasHeight  : 4700,
+  // offSetX       : 200,
+  // offSetY       : 3950,
+
   const [modParts, setModParts] = useState([]);
   const [BuildParts, setBuildParts] = useState([]);
   const canvasRef = useRef(null);
   let markerRef = useRef({});
 
-  // canvasWidth   : 2000
-  // canvasHeight  : 4700,
-  // offSetX       : 200,
-  // offSetY       : 3950,
-  //화면에 그리기
-  // const onClickButton = async () => {
-  //   let tempModParts = [...modParts]; // 정렬을 위하 임시저장
-  //   let tempBuildParts = [...BuildParts];
-  //   await tempModParts.sort((a,b) => a.drawOrder - b.drawOrder);
-  //   await tempModParts.map(( part) => part?.draw());
-  //   await tempBuildParts.map((part) => part?.draw());
-  // }
-
   useEffect( () => {
-    axios.get('/parts',{
-      method: 'get',
-      baseURL: 'http://localhost:3001/'
-    }).then(result => {
-      const dummyData = result.data.craneData; //craneData
-      const partsData = result.data.partsData; //partsData
-      const partsList = result.data.partsList;
+    const craneData = craneInfo.craneData;
+    const partsData = craneInfo.partsData;
+    const partsList = craneInfo.partsList;
 
-      const modulesA = convertCraneData(dummyData, partsData, partsList); //크레인정보 입력된 데이터 객체
-      // const modulesA = convertCraneData(dummyData, partsData1); //크레인정보 입력된 데이터 객체
-      // console.log(modulesA);
+    if(craneData && partsData && partsList) {
+      // const craneData = result.data.craneData; //craneData
+      // const partsData = result.data.partsData; //partsData
+      // const partsList = result.data.partsList;
+
+      const modulesA = convertCraneData(craneData, partsData, partsList); //크레인정보 입력된 데이터 객체
       let transParts = {}; // wire를 그리기위해 변환된 와이어 좌표값 저장 객체
 
-      const getBuildingCoordinate = async (_canvasRef) => {
+      const getBuildingCoordinate = async (_canvasRef, {craneData}) => {
+
         const ctx = _canvasRef.getContext('2d');
 
-        const isBlock1Exist = Boolean(dummyData.craneData.block.vertical1);
-        const isBlock2Exist = Boolean(dummyData.craneData.block.vertical2);
+        const isBlock1Exist = Boolean(craneData.block.vertical1);
+        const isBlock2Exist = Boolean(craneData.block.vertical2);
 
         let blockPart; // 진짜 장애물
         if(isBlock1Exist) {
           blockPart = new BuildingModule(
             offSetX,
             offSetY,
-            dummyData.craneData.block.vertical1,
-            dummyData.craneData.block.height1,
+            craneData.block.vertical1,
+            craneData.block.height1,
             'Block',
             ctx,
             pixelPerMeter,
             markerRef.current.center.x,
-            dummyData.craneData.centerToBlockDistance + dummyData.craneData.block.vertical2,
+            craneData.centerToBlockDistance + craneData.block.vertical2,
             ['right','bottom'],
           );
         }
@@ -83,13 +75,13 @@ function Canvas() {
           block2Part = new BuildingModule(
             offSetX,
             offSetY,
-            dummyData.craneData.block.vertical2,
+            craneData.block.vertical2,
             0.5,
             'Building',
             ctx,
             pixelPerMeter,
             markerRef.current.center.x,
-            dummyData.craneData.centerToBlockDistance,
+            craneData.centerToBlockDistance,
             ['bottom']
           );
         }
@@ -98,19 +90,19 @@ function Canvas() {
         const buildingPart = new BuildingModule(
           offSetX,
           offSetY,
-          dummyData.craneData.workBuilding.vertical,
-          dummyData.craneData.workBuilding.height,
+          craneData.workBuilding.vertical,
+          craneData.workBuilding.height,
           'Building',
           ctx,
           pixelPerMeter,
           markerRef.current.center.x,
-          dummyData.craneData.centerToBuildingDistance,
+          craneData.centerToBuildingDistance,
           ['right', 'bottom']
         );
 
-        // dummyData에서 craneData를 추출하여
+        // craneData에서 craneData를 추출하여
         // MarkerPoint 좌표 생성
-        const craneData = dummyData.craneData;
+
         // 주어진 거리값[m]을 좌표값(x,y)으로 변환
         const pointFromCenter = getPoint({
           x:markerRef.current.center.x,
@@ -201,7 +193,7 @@ function Canvas() {
           }
 
           // 파츠 객체 생성
-          const mod = new CraneModule(part, prevPartsNextCoord, offSetX,offSetY, ctx, dummyData );
+          const mod = new CraneModule(part, prevPartsNextCoord, offSetX,offSetY, ctx, craneData );
 
           mod.calculateCoordination();
           prevPartsNextCoord.x = mod.next[0].x; // 다음 파츠 부착위치 저장
@@ -247,7 +239,7 @@ function Canvas() {
                 ctx,
                 {x:markerRef.current.center.x, y:markerRef.current.center.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
-                dummyData.craneData.mainBoom, 30, 30);
+                craneData.craneData.mainBoom, 30, 30);
               boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
             }
@@ -275,10 +267,10 @@ function Canvas() {
                 ctx,
                 markerRef.current.fixStart,
                 markerRef.current.jibAngle.flyFixLuffingAngle
-,
+                ,
                 markerRef.current.jibAngle.mainAngle,
                 markerRef.current.jibAngle.flyFixLuffingAngle
-,
+                ,
                 200,
               );
               flyFixLuffingAngle1.draw();
@@ -298,7 +290,7 @@ function Canvas() {
                 ctx,
                 {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
-                dummyData.craneData.flyFixLuffing, 30, 30);
+                craneData.craneData.flyFixLuffing, 30, 30);
               jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
             }
@@ -318,19 +310,16 @@ function Canvas() {
       }
 
       getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});
-      getBuildingCoordinate(canvasRef.current).catch((err) => {console.log(err)});
+      getBuildingCoordinate(canvasRef.current, craneData).catch((err) => {console.log(err)});
 
       //  draw wire Lines
-      // const wireModules = getWireComposition(dummyData);
+      // const wireModules = getWireComposition(craneData);
       // const points = wirePoints(wireModules,transParts);
       // const ctx = canvasRef.current.getContext('2d');
       // drawWire(points,ctx);
+    }
 
-    }).catch(e => console.log(e));
-    // console.log(partsData2);
-
-
-  }, [])
+  }, [craneInfo])
 
   // Draw Image
   let tempModParts = [...modParts]; // 정렬을 위하 임시저장
