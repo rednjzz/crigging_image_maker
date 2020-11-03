@@ -1,6 +1,6 @@
 const IMAGE_SERVER = 'http://192.168.0.150:3001/images/'
 export default {
-  LTM_11200: {
+  L_11200: {
     "BODY":{
       name: 'BODY',
       type: 'bodyParts',
@@ -9,6 +9,13 @@ export default {
         y: 2587,
       },
       joint: [{
+        x: 2515,
+        y: 2459,
+      }],
+      wire: [{
+        x: 2363,
+        y: 2409,
+      }, {
         x: 2515,
         y: 2459,
       }],
@@ -25,6 +32,13 @@ export default {
       joint: [
         {x: 3226, y: 500,},
         {x: 733, y: 525,}],
+      wire: [{
+        x: 2200,
+        y: 2587,
+      }, {
+        x: 2200,
+        y: 2587,
+      },],
       code: 'T',
       imgSrc: `${IMAGE_SERVER}LTM_11200/T7_100.png`,
       drawOrder: 13,
@@ -361,6 +375,9 @@ export default {
       },
       joint: [
         {x: 2592, y: 2500,}],
+      wire: [{
+        x: 2496, y: 2381
+      }, {x: 2496, y:2381}],
       marker: true,
       length: 6,
       imgSrc: `${IMAGE_SERVER}LTM_11200/VE.png`,
@@ -404,6 +421,9 @@ export default {
       },
       joint: [
         {x: 477, y: 553,}],
+      wire: [
+        {x: 513, y: 456}
+      ],
       length: 0.5,
 
       imgSrc: `${IMAGE_SERVER}LTM_11200/A_0.5.png`,
@@ -541,8 +561,10 @@ export default {
         y: 495
       },
       joint: [
-        {x: 512, y: 500},
-
+        {x: 512, y: 500}
+      ],
+      wire: [
+        {x: 513, y:459}
       ],
       imgSrc: `http://localhost:3001/images/LTM_11200/1m_NM_head.png`,
       drawOrder: 7,
@@ -621,6 +643,7 @@ export default {
       },
       joint: [
         {x: 519 , y: 737}],
+      wire: [{x: 521 , y: 280}, {x: 521 , y: 310},  {x: 484 , y: 311}],
       refCode: 'T',
       imgSrc: `${IMAGE_SERVER}LTM_11200/Y.png`,
       drawOrder: 20,

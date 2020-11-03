@@ -30,11 +30,12 @@ export default class CraneModule {
     this.imgSrc = part.imgSrc;
     this.ctx = ctx;
     this.joint = part.joint;
+    this.wire = part.wire;
     this.next = [];
+    this.transWire = [];
     // this.refs = part.reference;
     this.marker = part.marker; //마커가 있는지 true false
     this.length = part.length; //parts length (boom or fix)
-    console.log(this.length);
     this.part = part;
     this.pointInfo = {
     };
@@ -45,7 +46,6 @@ export default class CraneModule {
     // this.dummyData = dummyData;
     this.tipLength = 30;
     this.tipOffset = 150;
-
   }
 
   rotate(x1, y1, x2, y2, wX, wY, radianAngle) {
@@ -202,6 +202,16 @@ export default class CraneModule {
       const y = this.joint[i].y;
       this.next[i] = this.rotate(this.x1,this.y1, x, y, this.wX, this.wY, this.radianAngle);
     }
+    // wire 좌표 변환 데이터
+    if(this.wire){
+      for(let j=0 ; j<this.wire.length; j++) {
+        const x = this.wire[j].x;
+        const y = this.wire[j].y;
+        const result = this.rotate(this.x1, this.y1, x, y, this.wX, this.wY, this.radianAngle);
+        this.transWire[j] = {x: result.x + this.offSetX, y: result.y + this.offSetY};
+      }
+    }
+
 
     // 특정 point 계산
 

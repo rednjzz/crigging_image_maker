@@ -1,5 +1,5 @@
 export default {
-  craneName: 'LTM_11200',
+  craneName: 'L_11200',
   // craneCode: 'T7YVEV3V2F|NZF',
   craneCode: 'T7YVEF|NZF',
   craneModeName: 'LUFFING',

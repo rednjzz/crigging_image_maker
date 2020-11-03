@@ -8,6 +8,9 @@ import BuildingModule from "./BuildingModule";
 import LineMarker from "./LineMarker";
 import AngleMarker from "./AngleMarker";
 import {drawPoints, getPoint} from "./utils";
+import {getWireComposition, wirePoints } from "./getWireComposition";
+import drawWire from './drawWire';
+import {abbreviatePartName} from "./utils";
 
 // canvas의 크기와 옵셋 설정
 let { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
@@ -39,6 +42,7 @@ function Canvas() {
 
   useEffect( () => {
     const modulesA = convertCraneData(dummyData, partsData[dummyData.craneName]); //크레인정보 입력된 데이터 객체
+    let transParts = {}; // wire를 그리기위해 변환된 와이어 좌표값 저장 객체
 
     const getBuildingCoordinate = async (_canvasRef) => {
       const ctx = _canvasRef.getContext('2d');
@@ -138,32 +142,6 @@ function Canvas() {
           value: craneData.flyFixLuffing
         }
       }
-
-      // let buildingLine = new LineMarker(
-      //   ctx,
-      //   {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-      //   {x:markerRef.current.buildingStart.x, y:markerRef.current.buildingStart.y},
-      //   'BuildingDistance', 10, 30);
-      // let d1Line = new LineMarker(
-      //   ctx,
-      //   {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-      //   {x:markerRef.current.fixStart.x, y:markerRef.current.boomStart.y},
-      //   'd1', 10, 30);
-      // let d2Line = new LineMarker(
-      //   ctx,
-      //   {x:markerRef.current.fixStart.x, y:markerRef.current.boomStart.y},
-      //   {x:markerRef.current.fixEnd.x, y:markerRef.current.boomStart.y},
-      //   'd2', 10, 30);
-      // let h1Line = new LineMarker(
-      //   ctx,
-      //   {x:markerRef.current.fixEnd.x, y:3950},
-      //   {x:markerRef.current.fixEnd.x, y:markerRef.current.fixEnd.y},
-      //   'h1', 10, 30);
-      // let h2Line = new LineMarker(
-      //   ctx,
-      //   {x:markerRef.current.fixEnd.x, y:markerRef.current.fixStart.y},
-      //   {x:markerRef.current.fixEnd.x, y:markerRef.current.fixEnd.y},
-      //   'h2', 10, 30);
       let blockLine = new LineMarker(
         ctx,
         {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
@@ -195,10 +173,10 @@ function Canvas() {
         ]);
       return buildingPart
     }
-
     const getCraneCoordinate = async ( _canvasRef, modules ) => {
       let prevPartsNextCoord = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
       let additionalParts = {}; //추가 파츠 좌표 저장 객체
+
 
       /* parts 모듈 생성 */
       const newModules = modules.map((part, index) => {
@@ -313,11 +291,12 @@ function Canvas() {
           default : {
           }
         }
-        
-        // if (mod.pointInfo.start) {
-        //   drawPoints([mod.pointInfo.start], ctx);
-        // }
-        
+        // wire 좌표 변환
+        if (/^T/g.test(mod.partName)) part.name =  'T'; //붐이면 여러개의 part.name이 올수 있기때문에 T 1개로 변경
+        if(mod.transWire[0]){
+          transParts[`${part.name}`] = mod.transWire; // wire 좌표 변환된 파츠 네임에 맞춰 값을 저장
+        }
+
         return mod;
       })// end map
 
@@ -326,6 +305,13 @@ function Canvas() {
 
     getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});
     getBuildingCoordinate(canvasRef.current).catch((err) => {console.log(err)});
+
+    //  draw wire Lines
+    const wireModules = getWireComposition(dummyData);
+    const points = wirePoints(wireModules,transParts);
+    const ctx = canvasRef.current.getContext('2d');
+    drawWire(points,ctx);
+
   }, [])
 
   // Draw Image

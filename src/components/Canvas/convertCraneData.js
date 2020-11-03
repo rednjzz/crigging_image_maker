@@ -51,7 +51,7 @@ function getParts({craneName, craneCode, craneData}) {
   let N,F,K;
   const jibMode = getJibMod(craneCode);
   switch( craneName) {
-    case 'LTM_11200':
+    case 'L_11200':
       // get combined JibParts
       switch (jibMode) {
         case 'N' : {
@@ -113,7 +113,7 @@ function getParts({craneName, craneCode, craneData}) {
         case 'T3YVEF|NZF'     : return ['BODY', `T3_${craneData.mainBoom}`, 'A_2.2', 'VE', 'A_0.5', ...F ]
         default               : return ['BODY']
       }
-    case 'LTM_1750': {
+    case 'L_1750': {
       switch (jibMode) {
         case 'N' : {
           switch(craneData.flyFixLuffing) {
