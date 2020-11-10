@@ -5,7 +5,8 @@ export default class LineMarker {
     end = {x:0,y:0},
     value= '0',
     tipLength = 30,
-    fontSize = 30
+    fontSize = 30,
+    valueOffset = 0,
   ) {
     this.ctx = ctx;
     this.start = start;
@@ -13,6 +14,7 @@ export default class LineMarker {
     this.value = value;
     this.tipLength = tipLength;
     this.fontSize = fontSize;
+    this.valueOffset = valueOffset;
     this.rotateAngle =  Math.atan((start.y - end.y) / (end.x - start.x)); //라인의 각도
     this.lineData = {
       center: {x: 0, y: 0},
@@ -95,7 +97,6 @@ export default class LineMarker {
     const lineData = this.lineData;
     const rotateAngle = this.rotateAngle;
     const rotate = this.rotate;
-    const {x, y} = this.start;
     switch (position) {
       case 'up2': {
         // rotational error compensation
@@ -109,6 +110,21 @@ export default class LineMarker {
           lineData.lines[i].start.x -= rec.x;
           lineData.lines[i].end.y -= rec.y;
           lineData.lines[i].end.x -= rec.x;
+        }
+        break;
+      }
+      case 'down2': {
+        // rotational error compensation
+        const rec = rotate(0, 0, 0, offset,rotateAngle);
+
+        lineData.center.y += rec.y;
+        lineData.center.x += rec.x;
+        for (let i = 0; i < lineData.lines.length; i++) {
+          // lineData.lines[i].start.y -= offset;
+          lineData.lines[i].start.y += rec.y;
+          lineData.lines[i].start.x += rec.x;
+          lineData.lines[i].end.y += rec.y;
+          lineData.lines[i].end.x += rec.x;
         }
         break;
       }
@@ -152,7 +168,7 @@ export default class LineMarker {
   }
 
   draw(ctx = this.ctx) {
-    const length = this.value;
+    const length = this.value.toFixed(1);
     const lineData = this.lineData;
     const fontSize = this.fontSize;
 
@@ -161,8 +177,17 @@ export default class LineMarker {
     ctx.fillStyle = 'black';
     // ctx.textAlign = "center";
     // ctx.textBaseline = "middle";
-    ctx.lineWidth = 3;
-    ctx.fillText(`${length}[m]`, lineData.center.x, lineData.center.y);
+    ctx.lineWidth = 1;
+    if (this.valueOffset) {
+      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + this.valueOffset);
+    }
+    else if (length > 4 ){
+      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y);
+    } else {
+      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + 36);
+    }
+
+
     lineData.lines.forEach((line) => {
       ctx.moveTo(line.start.x, line.start.y);
       ctx.lineTo(line.end.x, line.end.y);

@@ -1,29 +1,23 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import Canvas from '../Canvas';
+import { baseURL } from '../config';
 
 function CanvasWrapper() {
-  const [craneInfo, setCraneInfo] = useState({});
-  const [craneData, setCraneData] = useState({});
-  const [partsData, setPartsData] = useState({});
-  const [partsList, setPartsList] = useState([]);
+  const [craneInfo, setCraneInfo] = useState(null);
 
   useEffect( () => {
     axios.get('/parts',{
       method: 'get',
-      baseURL: 'http://localhost:3001/'
+      baseURL: baseURL,
     }).then(result => {
       setCraneInfo(result.data);
-      // setCraneData(result.data.craneData);
-      // setPartsData(result.data.partsData);
-      // setPartsList(result.data.partsList);
     }).catch(e => console.log(e));
   }, [])
 
   return (
     <>
-      {/*{console.log("aa",craneInfo)}*/}
-      <Canvas craneInfo={craneInfo} />
+      {craneInfo ?  <Canvas craneInfo={craneInfo} /> : null}
     </>
   )
 }

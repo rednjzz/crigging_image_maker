@@ -30,3 +30,19 @@ export function getJibMod(craneCode) {
   if (/K$/g.test(craneCode)) return 'K'
   return ''
 }
+
+export function getPixelPerMeter(partsData){
+  // console.log(partsData);
+  for (let key in partsData) {
+    // 길이값이 있는 메인붐을 기준점으로 하기위해 붐 파츠를 찾는다
+
+    if(partsData.hasOwnProperty(key) && partsData[key].type === 'boomParts') {
+      const pattern = /_(\d{1,3}).*(\d)?/ // _100.3 와 같은 패턴
+      let matchedArray = key.match(pattern)[0]; // 패턴과 매치 되는 값을 찾는다.
+      let len = matchedArray.split('_')[1]; // _100.3 에서 _를 제거한다.
+      let length_meter = parseFloat(len);
+      const diffPx = partsData[key].joint[0].x - partsData[key].origin.x; // 시작 점과 끝점의 pixel 차이값
+      return diffPx / length_meter;
+    }
+  }
+}

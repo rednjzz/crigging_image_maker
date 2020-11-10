@@ -12,7 +12,7 @@ import {abbreviatePartName} from "./utils";
 
 export default class CraneModule {
 
-  constructor(part,prevPartNextCoord, offSetX, offSetY, ctx, dummyData) {
+  constructor(part,prevPartNextCoord, offSetX, offSetY, ctx, markerPosition = 'up') {
     this.x1 = part.origin.x; //시작점
     this.y1 = part.origin.y;
     this.x2 = part.joint[0].x;
@@ -23,32 +23,32 @@ export default class CraneModule {
     this.offSetY = offSetY;
     this.angle = part.angle;
     this.mainAngle = part.mainAngle;
-    this.flyFixLuffingAngle = part.flyFixLuffingAngle
-;
+    this.center = part.center;
+    this.flyFixLuffingAngle = part.flyFixLuffingAngle;
     this.radianAngle = this.angle * (2 * Math.PI) / 360;
     this.mainRadianAngle = this.mainAngle * (2 * Math.PI) / 360;
-    this.fixLuffingRadianAngle = this.flyFixLuffingAngle
- * (2 * Math.PI) / 360;
+    this.fixLuffingRadianAngle = this.flyFixLuffingAngle * (2 * Math.PI) / 360;
     this.imgSrc = part.imgSrc;
     this.ctx = ctx;
     this.joint = part.joint;
     this.wire = part.wire;
     this.next = [];
     this.transWire = [];
+    this.transCenter = {};
     // this.refs = part.reference;
     this.marker = part.marker; //마커가 있는지 true false
     this.length = part.length; //parts length (boom or fix)
     this.part = part;
     this.pointInfo = {
     };
-    this.radius = 100; // 호의 반지름 (각도표시)
-    if(part.flyFixLuffingAngle
-) {
-      this.radius = 250;
-    }
+    // this.radius = 100; // 호의 반지름 (각도표시)
+    // if(part.flyFixLuffingAngle) {
+    //   this.radius = 250;
+    // }
     // this.dummyData = dummyData;
     this.tipLength = 30;
     this.tipOffset = 150;
+    this.markerPosition = markerPosition;
   }
 
   rotate(x1, y1, x2, y2, wX, wY, radianAngle) {
@@ -74,9 +74,16 @@ export default class CraneModule {
   }
 
   calculateMarker(x1, y1, x2, y2, marker, wX, wY, radianAngle, offSetX, offSetY) {
+    let offset;
+
+    if (this.markerPosition === 'up'){
+      this.tipOffset = 150;
+    } else if (this.markerPosition === 'down'){
+      this.tipOffset = -150;
+    }
     if(marker) {
       const offset = this.tipOffset;
-      const tipLength = this.tipLength; //마커의 길이 값
+            const tipLength = this.tipLength; //마커의 길이 값
       // const next = this.rotate(x1, y1, marker.end.x, marker.end.y, wX, wY, radianAngle);
       const nextEnd = this.rotate(x1, y1, x2, y2 - offset, wX, wY, radianAngle);
       const nextStart = this.rotate(x1, y1, x1, y1 - offset, wX, wY, radianAngle);
@@ -208,11 +215,20 @@ export default class CraneModule {
     // wire 좌표 변환 데이터
     if(this.wire){
       for(let j=0 ; j<this.wire.length; j++) {
-        const x = this.wire[j].x;
-        const y = this.wire[j].y;
-        const result = this.rotate(this.x1, this.y1, x, y, this.wX, this.wY, this.radianAngle);
-        this.transWire[j] = {x: result.x + this.offSetX, y: result.y + this.offSetY};
+        if(this.wire[j].x && this.wire[j].y){
+          const x = this.wire[j].x;
+          const y = this.wire[j].y;
+          const result = this.rotate(this.x1, this.y1, x, y, this.wX, this.wY, this.radianAngle);
+          this.transWire[j] = {x: result.x + this.offSetX, y: result.y + this.offSetY};
+        }
       }
+    }
+    // 센터 좌표 변환 데이터
+    if(this.part.name === 'BODY' && this.center) {
+      const x = this.center.x ;
+      const y = this.center.y ;
+      const result = this.rotate(this.x1, this.y1, x, y, this.wX, this.wY, this.radianAngle);
+      this.transCenter = {x:result.x + this.offSetX, y:result.y + this.offSetY}
     }
 
 

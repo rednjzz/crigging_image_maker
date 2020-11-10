@@ -1,5 +1,5 @@
 export default class BuildingModule{
-  constructor(offSetX, offSetY, width, height, type, ctx, ppm, centerX,distance, markPosition=[], markOffset= 0) {
+  constructor(offSetX, offSetY, width, height, type, ctx, ppm, centerX,distance, markPosition=[], markOffset= 0, fontSize= 30) {
     this.offSetX = offSetX;
     this.offSetY = offSetY;
     this.width = ppm * width;
@@ -12,6 +12,7 @@ export default class BuildingModule{
     this.markPosition = markPosition;
     this.color = 'grey';
     this.markOffset = markOffset;
+    this.fontSize = fontSize;
     this.initialSetup(type);
   }
   initialSetup(type) {
@@ -36,9 +37,6 @@ export default class BuildingModule{
         this.color = 'blue';
       }
     }
-  }
-  changeMeterToPixel(val) {
-    return this.ppm * val;
   }
 
   calculateCoordinate() {
@@ -72,7 +70,6 @@ export default class BuildingModule{
 
       this.drawGuideLine(this.markPosition, 'black');
       this.drawBox(x,y, width, height, this.color, this.lineColor);
-      // this.drawText(this.markPosition, 'black');
   }
 
   drawBox(x,y,width,height, color, lineColor) {
@@ -101,7 +98,7 @@ export default class BuildingModule{
     const textOffsetLeft = 160 + this.markOffset;
     const textOffsetTop = 50 + this.markOffset;
     const correctPosition = 40; // 폭을 나타내는 글자가 중간에서 시작하지 않기때문에 보정해줌
-    const fontSize = 30;
+    const fontSize = this.fontSize;
 
     const heightRight = { // 높이 값이 위치 해야하는 좌표(x,y)
       x: this.ref2.x + textOffsetRight,
@@ -256,6 +253,7 @@ export default class BuildingModule{
     this.ctx.strokeStyle = 'black';
     this.ctx.textAlign = "center";
     this.ctx.textBaseline = "middle";
+
     //Bottom
     if (markPosition.find(v => v === 'bottom')){
       this.ctx.moveTo(gBottom1.x,gBottom1.y);

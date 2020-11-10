@@ -1,33 +1,33 @@
 import React, {useState, useRef, useEffect} from 'react';
-import config from "./config";
-import dummyData from './dummyData'; // 삭제되어야 함
-
 import convertCraneData from "./convertCraneData";
 import CraneModule from './CraneModule';
 import BuildingModule from "./BuildingModule";
 import LineMarker from "./LineMarker";
 import AngleMarker from "./AngleMarker";
-import {drawPoints, getPoint} from "./utils";
-import {getWireComposition, wirePoints } from "./getWireComposition";
-import drawWire from './drawWire';
-import {abbreviatePartName} from "./utils";
-import axios from 'axios';
+import {getPoint, getPixelPerMeter, drawPoints} from "./utils";
 
-// canvas의 크기와 옵셋 설정
-let { canvasWidth, canvasHeight, offSetX, offSetY, pixelPerMeter} = config;
-const pointFromOrigin = getPoint({x:0,y:0}, pixelPerMeter);
-const totalDistance = pointFromOrigin(dummyData.craneData.totalDistance);
-const totalHeight = pointFromOrigin(dummyData.craneData.totalHeight);
-canvasWidth = totalDistance.x + 2500;
-canvasHeight = totalHeight.x + 5000;
-offSetY = canvasHeight - 500;
+import {wirePoints } from "./getWireComposition";
+import drawWire from './drawWire';
 
 function Canvas({craneInfo}) {
-  // cavas의 크기 및 옵세을 config 해야한다.
-  // canvasWidth   : 2000
-  // canvasHeight  : 4700,
-  // offSetX       : 200,
-  // offSetY       : 3950,
+  // canvas의 크기와 옵셋 설정
+  const craneData = craneInfo.craneData.craneData;
+  const partsData = craneInfo.partsData;
+
+  // config
+  let pixelPerMeter = getPixelPerMeter(partsData);
+  const offSetX = 200;
+  let canvasWidth;
+  let canvasHeight;
+  let offSetY;
+
+  const pointFromOrigin = getPoint({x:0,y:0}, pixelPerMeter);
+  const totalDistance = pointFromOrigin(craneData.totalDistance);
+  const totalHeight = pointFromOrigin(craneData.totalHeight);
+
+  canvasWidth = totalDistance.x + 1000; // 전체 크레인 폭에서 1000px 추가 해서 공간 만들기
+  canvasHeight = totalHeight.x + 1000; // 전체 크레인 길이에서 1000px 추가 해서 공간 만들기
+  offSetY = canvasHeight - 500; // 크레인 바닥에 길이 표시를 위한 공간 만들기
 
   const [modParts, setModParts] = useState([]);
   const [BuildParts, setBuildParts] = useState([]);
@@ -38,17 +38,13 @@ function Canvas({craneInfo}) {
     const craneData = craneInfo.craneData;
     const partsData = craneInfo.partsData;
     const partsList = craneInfo.partsList;
+    const wireData = craneInfo.wireData;
 
     if(craneData && partsData && partsList) {
-      // const craneData = result.data.craneData; //craneData
-      // const partsData = result.data.partsData; //partsData
-      // const partsList = result.data.partsList;
-
       const modulesA = convertCraneData(craneData, partsData, partsList); //크레인정보 입력된 데이터 객체
       let transParts = {}; // wire를 그리기위해 변환된 와이어 좌표값 저장 객체
 
       const getBuildingCoordinate = async (_canvasRef, {craneData}) => {
-
         const ctx = _canvasRef.getContext('2d');
 
         const isBlock1Exist = Boolean(craneData.block.vertical1);
@@ -59,14 +55,15 @@ function Canvas({craneInfo}) {
           blockPart = new BuildingModule(
             offSetX,
             offSetY,
-            craneData.block.vertical1,
+            2,
             craneData.block.height1,
             'Block',
             ctx,
             pixelPerMeter,
             markerRef.current.center.x,
             craneData.centerToBlockDistance + craneData.block.vertical2,
-            ['right','bottom'],
+            ['right'],
+            0,
           );
         }
 
@@ -82,7 +79,8 @@ function Canvas({craneInfo}) {
             pixelPerMeter,
             markerRef.current.center.x,
             craneData.centerToBlockDistance,
-            ['bottom']
+            ['bottom'],
+            0,
           );
         }
 
@@ -97,7 +95,8 @@ function Canvas({craneInfo}) {
           pixelPerMeter,
           markerRef.current.center.x,
           craneData.centerToBuildingDistance,
-          ['right', 'bottom']
+          ['right', 'bottom'],
+          0,
         );
 
         // craneData에서 craneData를 추출하여
@@ -108,64 +107,87 @@ function Canvas({craneInfo}) {
           x:markerRef.current.center.x,
           y:markerRef.current.center.y}, pixelPerMeter);
 
-        const blockPoint = pointFromCenter(craneData.centerToBlockDistance);
+        const blockPoint1 = pointFromCenter(craneData.centerToBlockDistance + craneData.block.vertical2);
+        const blockPoint2 = pointFromCenter(craneData.centerToBlockDistance);
         const buildingPoint = pointFromCenter(craneData.centerToBuildingDistance);
         const rearPoint = pointFromCenter(craneData.craneDistance);
+        const totalPoint = pointFromCenter(craneData.totalDistance);
 
         markerRef.current = {
           ...markerRef.current,
-          buildingStart: {
-            x:buildingPoint.x,
-            y:buildingPoint.y,
-            value: craneData.craneDistance
-          },
-          blockStart: {
-            x:blockPoint.x,
-            y:blockPoint.y,
-          },
           rearPoint: {
             x:rearPoint.x,
-            y:rearPoint.y
-          },
-          totalDistance: {
-            x:markerRef.current.end.x,
-            y:markerRef.current.boomStart.y,
-            value:craneData.totalDistance
+            y:rearPoint.y,
+            value: craneData.craneDistance
           },
           craneDistance: {
             x:rearPoint.x,
             y: rearPoint.y,
             value: craneData.craneDistance
           },
-          blockDistance: {
-            x: blockPoint.x,
-            y: blockPoint.y,
+          blockDistance1: {
+            x: blockPoint1.x,
+            y: blockPoint1.y,
             value: craneData.centerToBlockDistance
           },
-          flyFixLuffing: {
-            value: craneData.flyFixLuffing
-          }
+          blockDistance2: {
+            x: blockPoint2.x,
+            y: blockPoint2.y,
+            value: craneData.centerToBlockDistance
+          },
+          buildingDistance: {
+            x:buildingPoint.x,
+            y:buildingPoint.y,
+            value: craneData.centerToBuildingDistance
+          },
+          totalDistance: {
+            x:totalPoint.x,
+            y:totalPoint.y,
+            value:craneData.totalDistance
+          },
         }
         let blockLine = new LineMarker(
           ctx,
-          {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
-          {x:markerRef.current.blockDistance.x, y:markerRef.current.blockDistance.y},
-          markerRef.current.blockDistance.value, 10, 30);
+          {x:markerRef.current.center.x, y:markerRef.current.center.y},
+          {x:markerRef.current.blockDistance2.x, y:markerRef.current.blockDistance2.y},
+          markerRef.current.blockDistance2.value, 15, 30);
         let craneDistanceLine = new LineMarker(
           ctx,
-          {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
+          {x:markerRef.current.center.x, y:markerRef.current.center.y},
           {x:markerRef.current.rearPoint.x, y:markerRef.current.rearPoint.y},
-          markerRef.current.craneDistance.value, 10, 30);
+          markerRef.current.craneDistance.value, 15, 30);
 
         let totalDistanceLine = new LineMarker(
           ctx,
-          {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y},
+          {x:markerRef.current.center.x, y:markerRef.current.center.y},
           {x:markerRef.current.totalDistance.x, y:markerRef.current.totalDistance.y},
-          markerRef.current.totalDistance.value, 10, 30);
+          markerRef.current.totalDistance.value, 15, 30);
 
-        blockLine.calculateGuidelinePosition().applyOffset(350, 'down');
-        craneDistanceLine.calculateGuidelinePosition().applyOffset(165, 'down');
-        totalDistanceLine.calculateGuidelinePosition().applyOffset(500, 'down');
+        craneDistanceLine.calculateGuidelinePosition().applyOffset(100, 'down');
+        blockLine.calculateGuidelinePosition().applyOffset(200, 'down');
+        totalDistanceLine.calculateGuidelinePosition().applyOffset(300, 'down');
+
+        let blockToBuildingLine = new LineMarker(
+          ctx,
+          {x:markerRef.current.blockDistance1.x, y:markerRef.current.blockDistance1.y},
+          {x:markerRef.current.buildingDistance.x, y:markerRef.current.buildingDistance.y},
+          markerRef.current.buildingDistance.value - (markerRef.current.blockDistance1.value + craneData.block.vertical2), 15, 30,
+          36);
+        blockToBuildingLine.calculateGuidelinePosition().applyOffset(48, 'down');
+
+        let testLine = new LineMarker(
+          ctx,
+          {x:markerRef.current.center.x, y:markerRef.current.center.y},
+          {x:markerRef.current.buildingDistance.x, y:markerRef.current.buildingDistance.y},
+          markerRef.current.buildingDistance.value, 15, 30);
+        testLine.calculateGuidelinePosition().applyOffset(400, 'down');
+
+        let testLine2 = new LineMarker(
+          ctx,
+          {x:markerRef.current.rearPoint.x, y:markerRef.current.rearPoint.y},
+          {x:markerRef.current.blockDistance2.x, y:markerRef.current.blockDistance2.y},
+          markerRef.current.blockDistance2.value - markerRef.current.rearPoint.value, 15, 30);
+        testLine2.calculateGuidelinePosition().applyOffset(450, 'down');
 
         await setBuildParts([
           block2Part,
@@ -174,45 +196,58 @@ function Canvas({craneInfo}) {
           blockLine,
           craneDistanceLine,
           totalDistanceLine,
+          // testLine,
+          // testLine2,
+          blockToBuildingLine,
         ]);
         return buildingPart
       }
+
       const getCraneCoordinate = async ( _canvasRef, modules ) => {
         let prevPartsNextCoord = { x:0, y:0}; // 이전 파츠 값을 저장하기위한 좌표
         let additionalParts = {}; //추가 파츠 좌표 저장 객체
 
         /* parts 모듈 생성 */
-        const newModules = modules.map((part, index) => {
+        const newModules = modules.map((part) => {
           const ctx = _canvasRef.getContext('2d');
 
           if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
             const refCode = part.refCode;
             prevPartsNextCoord.x = additionalParts[refCode].x;
             prevPartsNextCoord.y = additionalParts[refCode].y;
-            part.angle = additionalParts[refCode].angle;
           }
 
           // 파츠 객체 생성
-          const mod = new CraneModule(part, prevPartsNextCoord, offSetX,offSetY, ctx, craneData );
+          const mod = new CraneModule(part, prevPartsNextCoord, offSetX, offSetY, ctx, 'down' );
 
           mod.calculateCoordination();
           prevPartsNextCoord.x = mod.next[0].x; // 다음 파츠 부착위치 저장
           prevPartsNextCoord.y = mod.next[0].y;
 
-          if (part.code) {
+          if (part.code) { // 이 파츠를 참조하는 파츠가 있다면
             additionalParts = {...additionalParts, [part.code]:{x:mod.next[1].x,y:mod.next[1].y, angle:mod.angle}};
           }
           // MarkerPoint 좌표 생성 및 마커 그리기
+          // console.log("AAA",mod.transCenter.x);
           switch (mod.partName) {
+            case 'BODY': {
+              markerRef.current = {
+                ...markerRef.current,
+                center: {
+                  x: mod.transCenter.x,
+                  y: mod.transCenter.y,
+                  // value: mod.angle
+                },
+              }
+              console.log(mod.transCenter);
+              break;
+            }
             case 'T': {
+              // console.log("TT", mod.pointInfo.start.x, mod.transCenter.x);
+              // console.log("TT2", mod.pointInfo.start.y, mod.transCenter.y);
               markerRef.current =  {
                 ...markerRef.current,
                 boomStart: {
-                  x:mod.pointInfo.start.x,
-                  y:mod.pointInfo.start.y,
-                  //value: mod.angle
-                },
-                center: {
                   x:mod.pointInfo.start.x,
                   y:mod.pointInfo.start.y,
                   value: mod.angle
@@ -226,21 +261,24 @@ function Canvas({craneInfo}) {
                 }
               }
               // 마커 그리기
+              // const points = [markerRef.current.center]
+              // drawPoints(points, ctx);
+
               const mainBoomAngle = new AngleMarker(
                 ctx,
-                markerRef.current.center,
+                markerRef.current.boomStart,
                 markerRef.current.boomAngle.mainAngle,
                 markerRef.current.boomAngle.mainAngle,
-                0,
+                markerRef.current.boomAngle.mainAngle,
                 200,
               );
               mainBoomAngle.draw();
               let boomMarkerLine = new LineMarker(
                 ctx,
-                {x:markerRef.current.center.x, y:markerRef.current.center.y },
+                {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
                 craneData.craneData.mainBoom, 30, 30);
-              boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+              boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'down2').draw();
               break;
             }
             case 'F': {
@@ -266,8 +304,7 @@ function Canvas({craneInfo}) {
               const flyFixLuffingAngle1 = new AngleMarker(
                 ctx,
                 markerRef.current.fixStart,
-                markerRef.current.jibAngle.flyFixLuffingAngle
-                ,
+                markerRef.current.jibAngle.flyFixLuffingAngle,
                 markerRef.current.jibAngle.mainAngle,
                 markerRef.current.jibAngle.flyFixLuffingAngle
                 ,
@@ -291,7 +328,7 @@ function Canvas({craneInfo}) {
                 {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
                 craneData.craneData.flyFixLuffing, 30, 30);
-              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'down2').draw();
               break;
             }
             default : {
@@ -312,14 +349,17 @@ function Canvas({craneInfo}) {
       getCraneCoordinate(canvasRef.current, modulesA).catch((err) => {console.log(err)});
       getBuildingCoordinate(canvasRef.current, craneData).catch((err) => {console.log(err)});
 
-      //  draw wire Lines
-      // const wireModules = getWireComposition(craneData);
-      // const points = wirePoints(wireModules,transParts);
-      // const ctx = canvasRef.current.getContext('2d');
-      // drawWire(points,ctx);
+      // // //  draw wire Lines
+      // const wireModules = getWireComposition(craneData.wire);
+      if   (wireData) {
+        const points = wirePoints(wireData,transParts);
+        const ctx = canvasRef.current.getContext('2d');
+        drawWire(points,ctx);
+      }
+
     }
 
-  }, [craneInfo])
+  }, [craneInfo, pixelPerMeter, offSetY])
 
   // Draw Image
   let tempModParts = [...modParts]; // 정렬을 위하 임시저장

@@ -13,7 +13,7 @@ export default class AngleMarker extends LineMarker{
     super();
     this.ctx = ctx;
     this.origin = origin;
-    this.angleValue = mainAngle - flyFixLuffingAngle;
+    this.angleValue = flyFixLuffingAngle.toFixed(1);
     this.mainRadianAngle = mainAngle * (2 * Math.PI) / 360;
     this.fixLuffingRaianAngle = flyFixLuffingAngle * (2 * Math.PI) / 360;
     this.radius = radius;
@@ -84,7 +84,6 @@ export default class AngleMarker extends LineMarker{
     const font = this.font;
     const angleValue = this.angleValue;
     const ctx = this.ctx;
-
 
     ctx.beginPath();
     ctx.arc(x, y, radius, arc1.start, arc1.end);
