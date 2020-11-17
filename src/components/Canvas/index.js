@@ -4,10 +4,11 @@ import CraneModule from './CraneModule';
 import BuildingModule from "./BuildingModule";
 import LineMarker from "./LineMarker";
 import AngleMarker from "./AngleMarker";
-import {getPoint, getPixelPerMeter, drawPoints} from "./utils";
+import {getPoint, getPixelPerMeter} from "./utils";
 
 import {wirePoints } from "./getWireComposition";
 import drawWire from './drawWire';
+
 
 function Canvas({craneInfo}) {
   // canvas의 크기와 옵셋 설정
@@ -239,7 +240,6 @@ function Canvas({craneInfo}) {
                   // value: mod.angle
                 },
               }
-              console.log(mod.transCenter);
               break;
             }
             case 'T': {
@@ -271,6 +271,8 @@ function Canvas({craneInfo}) {
                 markerRef.current.boomAngle.mainAngle,
                 markerRef.current.boomAngle.mainAngle,
                 200,
+                { size: 30, color: 'black' },
+                'boom'
               );
               mainBoomAngle.draw();
               let boomMarkerLine = new LineMarker(
@@ -278,7 +280,7 @@ function Canvas({craneInfo}) {
                 {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
                 craneData.craneData.mainBoom, 30, 30);
-              boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'down2').draw();
+              boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
             }
             case 'F': {
@@ -300,15 +302,17 @@ function Canvas({craneInfo}) {
 
                 }
               }
+
               // 마커 그리기
               const flyFixLuffingAngle1 = new AngleMarker(
                 ctx,
                 markerRef.current.fixStart,
                 markerRef.current.jibAngle.flyFixLuffingAngle,
                 markerRef.current.jibAngle.mainAngle,
-                markerRef.current.jibAngle.flyFixLuffingAngle
-                ,
+                markerRef.current.jibAngle.flyFixLuffingAngle,
                 200,
+                { size: 30, color: 'black' },
+                'fix'
               );
               flyFixLuffingAngle1.draw();
               break;
@@ -328,7 +332,7 @@ function Canvas({craneInfo}) {
                 {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
                 craneData.craneData.flyFixLuffing, 30, 30);
-              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'down2').draw();
+              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
             }
             default : {
@@ -356,7 +360,6 @@ function Canvas({craneInfo}) {
         const ctx = canvasRef.current.getContext('2d');
         drawWire(points,ctx);
       }
-
     }
 
   }, [craneInfo, pixelPerMeter, offSetY])

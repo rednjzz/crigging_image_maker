@@ -8,7 +8,8 @@ export default class AngleMarker extends LineMarker{
     mainAngle,
     flyFixLuffingAngle,
     radius,
-    font
+    font,
+    mod,
   ) {
     super();
     this.ctx = ctx;
@@ -17,28 +18,28 @@ export default class AngleMarker extends LineMarker{
     this.mainRadianAngle = mainAngle * (2 * Math.PI) / 360;
     this.fixLuffingRaianAngle = flyFixLuffingAngle * (2 * Math.PI) / 360;
     this.radius = radius;
-    this.font = {
-      size: font ? font?.size : 30,
-      color: font ? font?.color : 'black',
-    };
+    this.font = font;
+    this.mod = mod;
   }
 
   calculateAngleLine() {
 
     const mainRadianAngle = this.mainRadianAngle;
     const fixLuffingRadianAngle = this.fixLuffingRaianAngle;
-    let diffRadianAngle
-    if (fixLuffingRadianAngle) {
-      diffRadianAngle = mainRadianAngle - fixLuffingRadianAngle;
-    } else {
-      diffRadianAngle = 0;
-    }
+    const diffRadianAngle = mainRadianAngle - fixLuffingRadianAngle;
 
     const radius = this.radius;
     const {x,y} = this.origin;
     const rotate = this.rotate; // 상속받은 로테이션 메서드
 
-    const ONE_THIRD = (fixLuffingRadianAngle ? fixLuffingRadianAngle : mainRadianAngle) / 3;
+    // const ONE_THIRD = (fixLuffingRadianAngle ? diffRadianAngle : mainRadianAngle) / 3;
+    let ONE_THIRD;
+
+    if (this.mod === 'fix') {
+      ONE_THIRD = fixLuffingRadianAngle / 3;
+    } else {
+      ONE_THIRD = mainRadianAngle / 3;
+    }
     const start1 = 2 * Math.PI - mainRadianAngle; // 첫번째 호의 시작
     const end1 = start1 + ONE_THIRD; // 첫번째 호의 끝
     const start2 = end1 + ONE_THIRD; // 두번째 호의 시작
@@ -49,7 +50,7 @@ export default class AngleMarker extends LineMarker{
     const mainLine = rotate(x, y, markerSize, y, mainRadianAngle); // boomAngle의 라인
     const diffLine = rotate(x, y, markerSize, y, diffRadianAngle); // diffAngle = boomAngle-fixAngle의 라인
     let value;
-    if (fixLuffingRadianAngle) {
+    if (this.mod === 'fix') {
       value = rotate(x,y, x+radius, y, diffRadianAngle + fixLuffingRadianAngle/2); // 값이 위치할 곳
     } else {
       value = rotate(x,y, x+radius, y, mainRadianAngle/2); // 값이 위치할 곳
@@ -77,6 +78,7 @@ export default class AngleMarker extends LineMarker{
   }
 
   draw() {
+    if (parseInt(this.angleValue) === 0) return;
     const { arc1, arc2, line1, line2, value } = this.calculateAngleLine();
     const x = this.origin.x;
     const y = this.origin.y;

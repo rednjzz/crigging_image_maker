@@ -74,7 +74,7 @@ export default class CraneModule {
   }
 
   calculateMarker(x1, y1, x2, y2, marker, wX, wY, radianAngle, offSetX, offSetY) {
-    let offset;
+    //let offset;
 
     if (this.markerPosition === 'up'){
       this.tipOffset = 150;
