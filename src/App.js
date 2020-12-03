@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <div> Hello CRIGGING</div>
         <CanvasWrapper />
-      <div> RIGGING IMAGE</div>
+      {/*<div> RIGGING IMAGE</div>*/}
     </div>
   );
 }

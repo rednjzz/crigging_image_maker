@@ -110,9 +110,12 @@ export function wirePoints(wireComposition, wireData) {
   // 1m_NM_head가 있고 3.8m_NI_head 가 없다면 F9m_nsbs에 1m_NM_head를 연결
   let isExist_1m_NM_head = false;
   let isExist_38m_NI_head = false;
+  let isExist_1m_NM_h = false;
+
   for(let parts in wireData) {
     if(parts === "1m_NM_head") isExist_1m_NM_head = true;
     else if(parts === "3.8m_NI_head") isExist_38m_NI_head = true;
+    else if(parts === "1m_NM_h") isExist_1m_NM_h = true;
   }
   // 1m만 존재한다면
   if (isExist_1m_NM_head && !isExist_38m_NI_head) {
@@ -132,13 +135,13 @@ export function wirePoints(wireComposition, wireData) {
     })
   }
   // 둘다 존재한다면
-  else if (isExist_1m_NM_head && isExist_38m_NI_head) {
+  else if (isExist_1m_NM_h && isExist_38m_NI_head) {
     // 둘다 존재한다면
     // F9m_nsbs를 3.8m_NI_head에 연결
     wireComposition.forEach((wire, index) => {
         const case2 = {
           from: {name: 'F9m_nsbs', number: 1},
-          to: {name: '1m_NM_head', number: 0}
+          to: {name: '1m_NM_h', number: 0}
         };
         if (case2.from.name === wire.from.name &&
           case2.from.number === wire.from.number &&
@@ -149,6 +152,7 @@ export function wirePoints(wireComposition, wireData) {
       })
   }
   return wireComposition.map(arr => {
+    console.log(arr);
     if(wireData[arr.from.name] && wireData[arr.to.name] ) {
       const from = wireData[arr.from.name][arr.from.number];
       const to = wireData[arr.to.name][arr.to.number];

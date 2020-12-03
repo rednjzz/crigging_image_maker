@@ -35,7 +35,7 @@ export default class AngleMarker extends LineMarker{
     // const ONE_THIRD = (fixLuffingRadianAngle ? diffRadianAngle : mainRadianAngle) / 3;
     let ONE_THIRD;
 
-    if (this.mod === 'fix') {
+    if (this.mod === 'jib') {
       ONE_THIRD = fixLuffingRadianAngle / 3;
     } else {
       ONE_THIRD = mainRadianAngle / 3;
@@ -50,7 +50,7 @@ export default class AngleMarker extends LineMarker{
     const mainLine = rotate(x, y, markerSize, y, mainRadianAngle); // boomAngle의 라인
     const diffLine = rotate(x, y, markerSize, y, diffRadianAngle); // diffAngle = boomAngle-fixAngle의 라인
     let value;
-    if (this.mod === 'fix') {
+    if (this.mod === 'jib') {
       value = rotate(x,y, x+radius, y, diffRadianAngle + fixLuffingRadianAngle/2); // 값이 위치할 곳
     } else {
       value = rotate(x,y, x+radius, y, mainRadianAngle/2); // 값이 위치할 곳

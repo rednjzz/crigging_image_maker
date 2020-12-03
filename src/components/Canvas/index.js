@@ -12,8 +12,14 @@ import drawWire from './drawWire';
 
 function Canvas({craneInfo}) {
   // canvas의 크기와 옵셋 설정
+  const craneName = craneInfo.craneData.craneName;
+  const craneMode = craneInfo.craneData.craneCode;
+  const cranePartsList = craneInfo.partsList;
+
+
   const craneData = craneInfo.craneData.craneData;
   const partsData = craneInfo.partsData;
+
 
   // config
   let pixelPerMeter = getPixelPerMeter(partsData);
@@ -36,10 +42,8 @@ function Canvas({craneInfo}) {
   let markerRef = useRef({});
 
   useEffect( () => {
-    const craneData = craneInfo.craneData;
-    const partsData = craneInfo.partsData;
-    const partsList = craneInfo.partsList;
-    const wireData = craneInfo.wireData;
+    const {craneData, partsData, partsList, wireData} = craneInfo;
+    console.log(craneInfo);
 
     if(craneData && partsData && partsList) {
       const modulesA = convertCraneData(craneData, partsData, partsList); //크레인정보 입력된 데이터 객체
@@ -168,27 +172,16 @@ function Canvas({craneInfo}) {
         blockLine.calculateGuidelinePosition().applyOffset(200, 'down');
         totalDistanceLine.calculateGuidelinePosition().applyOffset(300, 'down');
 
-        let blockToBuildingLine = new LineMarker(
+
+        const blockToBuildingLine = new LineMarker(
           ctx,
-          {x:markerRef.current.blockDistance1.x, y:markerRef.current.blockDistance1.y},
-          {x:markerRef.current.buildingDistance.x, y:markerRef.current.buildingDistance.y},
-          markerRef.current.buildingDistance.value - (markerRef.current.blockDistance1.value + craneData.block.vertical2), 15, 30,
+          {x: markerRef.current.blockDistance1.x, y: markerRef.current.blockDistance1.y},
+          {x: markerRef.current.buildingDistance.x, y: markerRef.current.buildingDistance.y},
+          markerRef.current.buildingDistance.value - (markerRef.current.blockDistance1.value + craneData.block.vertical2),
+          15, 30,
           36);
+        // 값이 없으면 표시하지 않을것이다
         blockToBuildingLine.calculateGuidelinePosition().applyOffset(48, 'down');
-
-        let testLine = new LineMarker(
-          ctx,
-          {x:markerRef.current.center.x, y:markerRef.current.center.y},
-          {x:markerRef.current.buildingDistance.x, y:markerRef.current.buildingDistance.y},
-          markerRef.current.buildingDistance.value, 15, 30);
-        testLine.calculateGuidelinePosition().applyOffset(400, 'down');
-
-        let testLine2 = new LineMarker(
-          ctx,
-          {x:markerRef.current.rearPoint.x, y:markerRef.current.rearPoint.y},
-          {x:markerRef.current.blockDistance2.x, y:markerRef.current.blockDistance2.y},
-          markerRef.current.blockDistance2.value - markerRef.current.rearPoint.value, 15, 30);
-        testLine2.calculateGuidelinePosition().applyOffset(450, 'down');
 
         await setBuildParts([
           block2Part,
@@ -197,8 +190,6 @@ function Canvas({craneInfo}) {
           blockLine,
           craneDistanceLine,
           totalDistanceLine,
-          // testLine,
-          // testLine2,
           blockToBuildingLine,
         ]);
         return buildingPart
@@ -212,8 +203,12 @@ function Canvas({craneInfo}) {
         const newModules = modules.map((part) => {
           const ctx = _canvasRef.getContext('2d');
 
+
           if (part.type === 'addParts'){ //추가 파츠이면 추가파츠 부착위치를 적용
             const refCode = part.refCode;
+            console.log(additionalParts);
+            console.log(refCode);
+            console.log(part);
             prevPartsNextCoord.x = additionalParts[refCode].x;
             prevPartsNextCoord.y = additionalParts[refCode].y;
           }
@@ -230,6 +225,7 @@ function Canvas({craneInfo}) {
           }
           // MarkerPoint 좌표 생성 및 마커 그리기
           // console.log("AAA",mod.transCenter.x);
+          console.log(mod.partName);
           switch (mod.partName) {
             case 'BODY': {
               markerRef.current = {
@@ -280,9 +276,10 @@ function Canvas({craneInfo}) {
                 {x:markerRef.current.boomStart.x, y:markerRef.current.boomStart.y },
                 {x:markerRef.current.end.x, y:markerRef.current.end.y },
                 craneData.craneData.mainBoom, 30, 30);
-              boomMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
+              boomMarkerLine.calculateGuidelinePosition().applyOffset(250, 'up2').draw();
               break;
             }
+
             case 'F': {
               markerRef.current = {
                 ...markerRef.current,
@@ -312,9 +309,50 @@ function Canvas({craneInfo}) {
                 markerRef.current.jibAngle.flyFixLuffingAngle,
                 200,
                 { size: 30, color: 'black' },
-                'fix'
+                'jib'
               );
               flyFixLuffingAngle1.draw();
+              break;
+            }
+            case 'K': {
+              console.log('K');
+              markerRef.current = {
+                ...markerRef.current,
+                fixStart: {
+                  x: mod.pointInfo.start.x,
+                  y: mod.pointInfo.start.y,
+                  //value: mod.angle
+                },
+                end: {
+                  x: mod.pointInfo.end.x,
+                  y: mod.pointInfo.end.y,
+                  //value: mod.angle
+                },
+                jibAngle: {
+                  mainAngle : mod.pointInfo.mainAngle,
+                  flyFixLuffingAngle: mod.pointInfo.flyFixLuffingAngle
+
+                }
+              }
+
+              // 마커 그리기
+              const flyFixLuffingAngle1 = new AngleMarker(
+                ctx,
+                markerRef.current.fixStart,
+                markerRef.current.jibAngle.flyFixLuffingAngle,
+                markerRef.current.jibAngle.mainAngle,
+                markerRef.current.jibAngle.flyFixLuffingAngle,
+                200,
+                { size: 30, color: 'black' },
+                'jib'
+              );
+              flyFixLuffingAngle1.draw();
+              let jibMarkerLine = new LineMarker(
+                ctx,
+                {x:markerRef.current.fixStart.x, y:markerRef.current.fixStart.y },
+                {x:markerRef.current.end.x, y:markerRef.current.end.y },
+                craneData.craneData.flyFixLuffing, 30, 30);
+              jibMarkerLine.calculateGuidelinePosition().applyOffset(150, 'up2').draw();
               break;
             }
             case 'H': {
@@ -340,7 +378,8 @@ function Canvas({craneInfo}) {
           }
           // wire 좌표 변환
           if (/^T/g.test(mod.partName)) part.name =  'T'; //붐이면 여러개의 part.name이 올수 있기때문에 T 1개로 변경
-          if(mod.transWire[0]){
+          //만약 와이어 값이 있다면
+          if(mod.transWire[1] || mod.transWire[0] || mod.transWire[2] || mod.transWire[3]){
             transParts[`${part.name}`] = mod.transWire; // wire 좌표 변환된 파츠 네임에 맞춰 값을 저장
           }
 
@@ -356,9 +395,11 @@ function Canvas({craneInfo}) {
       // // //  draw wire Lines
       // const wireModules = getWireComposition(craneData.wire);
       if   (wireData) {
+        console.log(transParts);
         const points = wirePoints(wireData,transParts);
         const ctx = canvasRef.current.getContext('2d');
         drawWire(points,ctx);
+
       }
     }
 
@@ -374,7 +415,20 @@ function Canvas({craneInfo}) {
   return (
     <div >
       <div style={{padding: 20 }}>
-        <canvas width={canvasWidth} height={canvasHeight} style={{borderStyle: 'solid', borderWidth: '1px', width:'468px'}} ref={canvasRef}/>
+        <canvas width={canvasWidth} height={canvasHeight} style={{borderStyle: 'solid', borderWidth: '1px', width:'468px', align:'center'}} ref={canvasRef}/>
+        <div style={{margin:"0 auto", borderStyle: 'solid', borderWidth: '1px', width:'468px'}}>
+          <div align={'left'} >
+            <div><span>이름:{'\u00A0'}{'\u00A0'}{'\u00A0'} {craneName}</span></div>
+            <div><span>모드:{'\u00A0'}{'\u00A0'}{'\u00A0'}  {craneMode}</span></div>
+            <div><span>파츠:{'\u00A0'}{'\u00A0'}{'\u00A0'}  </span>
+            {
+              cranePartsList?.map((parts) => {
+                return <span>{parts} | </span>
+              })
+            }
+            </div>
+          </div>
+        </div>
         {/*<button onClick={onClickButton}> 그리기 버튼</button>*/}
       </div>
     </div>

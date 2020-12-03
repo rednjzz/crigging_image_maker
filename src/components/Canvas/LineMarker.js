@@ -168,32 +168,34 @@ export default class LineMarker {
   }
 
   draw(ctx = this.ctx) {
-    const length = this.value.toFixed(1);
-    const lineData = this.lineData;
-    const fontSize = this.fontSize;
+    if(this.value) {
+      const length = this.value.toFixed(1);
+      const lineData = this.lineData;
+      const fontSize = this.fontSize;
 
-    ctx.beginPath();
-    ctx.font = `normal ${fontSize}pt Arial`;
-    ctx.fillStyle = 'black';
-    // ctx.textAlign = "center";
-    // ctx.textBaseline = "middle";
-    ctx.lineWidth = 1;
-    if (this.valueOffset) {
-      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + this.valueOffset);
+      ctx.beginPath();
+      ctx.font = `normal ${fontSize}pt Arial`;
+      ctx.fillStyle = 'black';
+      // ctx.textAlign = "center";
+      // ctx.textBaseline = "middle";
+      ctx.lineWidth = 1;
+      if (this.valueOffset) {
+        ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + this.valueOffset);
+      }
+      else if (length > 4 ){
+        ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y);
+      } else {
+        ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + 36);
+      }
+
+
+      lineData.lines.forEach((line) => {
+        ctx.moveTo(line.start.x, line.start.y);
+        ctx.lineTo(line.end.x, line.end.y);
+      })
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
     }
-    else if (length > 4 ){
-      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y);
-    } else {
-      ctx.fillText(`${length}m`, lineData.center.x, lineData.center.y + 36);
-    }
-
-
-    lineData.lines.forEach((line) => {
-      ctx.moveTo(line.start.x, line.start.y);
-      ctx.lineTo(line.end.x, line.end.y);
-    })
-    ctx.strokeStyle = 'black';
-    ctx.stroke();
     ctx.setTransform(1, 0, 0, 1, 0, 0);     // 컨텍스트 초기화
   }
 }

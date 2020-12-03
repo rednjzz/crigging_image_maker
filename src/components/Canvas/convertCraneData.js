@@ -8,8 +8,8 @@ export default function convertCraneData({ craneData }, partsData, partsList) {
   for( let i=0 ; i<partsList.length ; i++) {
     const moduleName = partsList[i];
     moduleDetailArr.push(partsData[moduleName]);
-
-    switch(partsData[moduleName].type){
+    // console.log(partsData);
+    switch(partsData[moduleName]?.type){
       case 'bodyParts': {
         partsData[moduleName].angle = 0;
         break;
@@ -45,7 +45,8 @@ export default function convertCraneData({ craneData }, partsData, partsList) {
         }
       break;
       default : {
-        partsData[moduleName].angle = 0;
+        console.log("해당값이 없다",moduleName);
+        // partsData[moduleName].angle = 0;
       }
     }
   }
